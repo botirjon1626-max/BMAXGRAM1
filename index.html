@@ -10,152 +10,48 @@
     box-sizing:border-box;
     margin:0;
     padding:0;
+    font-family:Arial,sans-serif;
 }
 
 body{
-    font-family:Arial,sans-serif;
-    background:#0e1621;
+    background:#0b141a;
     color:#fff;
     height:100vh;
     overflow:hidden;
 }
 
-button,
-input,
-textarea{
-    font:inherit;
-}
-
 button{
-    cursor:pointer;
     border:0;
+    cursor:pointer;
 }
 
-.hidden{
-    display:none!important;
-}
-
-/* LOGIN */
-
-#loginPage{
-    width:100%;
-    height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:linear-gradient(135deg,#0e1621,#172b3d);
-}
-
-.loginBox{
-    width:92%;
-    max-width:420px;
-    background:#17212b;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 15px 50px #0008;
-}
-
-.logo{
-    text-align:center;
-    font-size:34px;
-    font-weight:bold;
-    color:#2aabee;
-    margin-bottom:10px;
-}
-
-.subtitle{
-    text-align:center;
-    color:#9aa8b4;
-    margin-bottom:25px;
-}
-
-.input{
-    width:100%;
-    padding:14px;
-    border-radius:12px;
-    border:1px solid #334554;
-    background:#0e1621;
-    color:white;
+input{
     outline:none;
-    margin-bottom:12px;
 }
 
-.input:focus{
-    border-color:#2aabee;
-}
-
-.btn{
-    width:100%;
-    padding:14px;
-    border-radius:12px;
-    background:#2aabee;
-    color:white;
-    font-weight:bold;
-    margin-top:5px;
-}
-
-.btn:hover{
-    opacity:.9;
-}
-
-.codeBox{
-    margin-top:15px;
-    background:#0e1621;
-    border-radius:12px;
-    padding:14px;
-    text-align:center;
-}
-
-#testCode{
-    color:#2aabee;
-    font-size:25px;
-    font-weight:bold;
-    letter-spacing:5px;
-    margin-top:7px;
-}
-
-/* APP */
-
-#app{
+.app{
     height:100vh;
     display:flex;
 }
+
+/* SIDEBAR */
 
 .sidebar{
-    width:340px;
-    background:#17212b;
-    border-right:1px solid #263542;
+    width:350px;
+    background:#111b21;
+    border-right:1px solid #27343b;
     display:flex;
     flex-direction:column;
 }
 
-.sidebarHeader{
+.logo{
     height:65px;
-    padding:12px;
     display:flex;
     align-items:center;
-    gap:10px;
-    border-bottom:1px solid #263542;
-}
-
-.brand{
-    font-size:23px;
+    padding:0 20px;
+    font-size:25px;
     font-weight:bold;
-    color:#2aabee;
-    flex:1;
-}
-
-.iconBtn{
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    background:transparent;
-    color:white;
-    font-size:21px;
-}
-
-.iconBtn:hover{
-    background:#263542;
+    color:#35d9a1;
 }
 
 .search{
@@ -164,12 +60,29 @@ button{
 
 .search input{
     width:100%;
-    padding:11px 14px;
+    background:#202c33;
     border:0;
-    outline:none;
-    border-radius:20px;
-    background:#242f3d;
+    border-radius:10px;
+    padding:12px 15px;
     color:white;
+}
+
+.tabs{
+    display:flex;
+    border-bottom:1px solid #27343b;
+}
+
+.tabs button{
+    flex:1;
+    padding:14px 5px;
+    background:transparent;
+    color:#9baab1;
+    font-size:14px;
+}
+
+.tabs button.active{
+    color:#35d9a1;
+    border-bottom:2px solid #35d9a1;
 }
 
 .list{
@@ -177,25 +90,17 @@ button{
     overflow-y:auto;
 }
 
-.sectionTitle{
-    padding:12px 15px 6px;
-    color:#7d8b98;
-    font-size:13px;
-    text-transform:uppercase;
-}
-
 .item{
-    min-height:65px;
-    padding:10px 14px;
     display:flex;
     align-items:center;
+    padding:12px;
     gap:12px;
     cursor:pointer;
+    border-bottom:1px solid rgba(255,255,255,.03);
 }
 
-.item:hover,
-.item.active{
-    background:#202b36;
+.item:hover{
+    background:#202c33;
 }
 
 .avatar{
@@ -203,11 +108,11 @@ button{
     height:48px;
     min-width:48px;
     border-radius:50%;
-    background:#2aabee;
+    background:#33434c;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:21px;
+    font-weight:bold;
     overflow:hidden;
 }
 
@@ -217,22 +122,21 @@ button{
     object-fit:cover;
 }
 
-.itemText{
-    overflow:hidden;
-    flex:1;
+.item-text{
+    min-width:0;
 }
 
-.itemName{
-    font-weight:bold;
+.item-name{
+    font-size:16px;
+    margin-bottom:4px;
+}
+
+.item-sub{
+    color:#8c9aa1;
+    font-size:13px;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-}
-
-.itemPhone{
-    color:#8998a5;
-    font-size:13px;
-    margin-top:4px;
 }
 
 /* CHAT */
@@ -241,38 +145,50 @@ button{
     flex:1;
     display:flex;
     flex-direction:column;
-    min-width:0;
+    background:#0b141a;
 }
 
-.chatHeader{
+.chat-header{
     height:65px;
+    background:#202c33;
     display:flex;
     align-items:center;
-    padding:8px 14px;
-    background:#17212b;
-    border-bottom:1px solid #263542;
+    padding:0 18px;
+    gap:12px;
 }
 
-.chatInfo{
+.header-info{
     flex:1;
-    margin-left:10px;
 }
 
-.chatName{
+.header-name{
+    font-size:16px;
     font-weight:bold;
 }
 
-.chatStatus{
+.header-status{
     font-size:12px;
-    color:#8b9aa7;
+    color:#9baab1;
     margin-top:3px;
+}
+
+.header-btn{
+    background:transparent;
+    color:white;
+    font-size:21px;
+    padding:8px;
 }
 
 .messages{
     flex:1;
     overflow-y:auto;
     padding:20px;
-    background:#0e1621;
+    background:
+      radial-gradient(
+        circle at center,
+        #17242b 0,
+        #0b141a 70%
+      );
 }
 
 .empty{
@@ -280,78 +196,136 @@ button{
     display:flex;
     align-items:center;
     justify-content:center;
-    color:#71808c;
+    color:#819099;
     text-align:center;
 }
 
 .message{
     max-width:75%;
-    padding:9px 12px;
     margin-bottom:8px;
-    border-radius:13px;
-    background:#182533;
+    padding:9px 12px;
+    border-radius:10px;
+    background:#202c33;
     width:max-content;
-    word-break:break-word;
 }
 
 .message.mine{
     margin-left:auto;
-    background:#225c7c;
+    background:#075e54;
 }
 
-.sender{
-    color:#2aabee;
+.message-name{
+    color:#35d9a1;
     font-size:12px;
     margin-bottom:4px;
-    font-weight:bold;
 }
 
-.messageTime{
+.message-time{
+    color:#9baab1;
     font-size:10px;
-    color:#aeb9c2;
-    margin-top:5px;
     text-align:right;
+    margin-top:4px;
 }
 
 .message audio{
-    max-width:240px;
+    max-width:250px;
 }
 
 .composer{
-    min-height:64px;
-    padding:9px;
+    min-height:65px;
+    background:#202c33;
     display:flex;
-    align-items:flex-end;
+    align-items:center;
+    padding:10px;
     gap:8px;
-    background:#17212b;
-    border-top:1px solid #263542;
 }
 
-.textarea{
+.composer input{
     flex:1;
-    resize:none;
-    max-height:120px;
-    min-height:44px;
-    padding:12px 14px;
-    border-radius:22px;
-    border:0;
-    outline:none;
-    background:#242f3d;
+    background:#2a3942;
     color:white;
+    border:0;
+    border-radius:10px;
+    padding:13px 15px;
 }
 
-.sendBtn,
-.voiceBtn{
-    width:45px;
-    height:45px;
+.circle-btn{
+    width:44px;
+    height:44px;
     border-radius:50%;
-    background:#2aabee;
-    color:white;
+    background:#35d9a1;
+    color:#06120f;
     font-size:20px;
 }
 
-.voiceBtn.recording{
-    background:#e53935;
+/* LOGIN */
+
+.login-screen{
+    position:fixed;
+    inset:0;
+    background:#0b141a;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.login-box{
+    width:100%;
+    max-width:390px;
+    background:#111b21;
+    border:1px solid #26353d;
+    border-radius:18px;
+    padding:30px;
+    box-shadow:0 20px 70px rgba(0,0,0,.5);
+}
+
+.login-box h1{
+    text-align:center;
+    color:#35d9a1;
+    margin-bottom:8px;
+}
+
+.login-box p{
+    text-align:center;
+    color:#8c9aa1;
+    margin-bottom:25px;
+}
+
+.login-box input{
+    width:100%;
+    padding:14px;
+    background:#202c33;
+    color:white;
+    border:1px solid #34444d;
+    border-radius:10px;
+    margin-bottom:12px;
+}
+
+.primary{
+    width:100%;
+    padding:14px;
+    background:#35d9a1;
+    color:#07130f;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.code-box{
+    margin-top:15px;
+    text-align:center;
+    background:#17252c;
+    padding:15px;
+    border-radius:10px;
+    display:none;
+}
+
+.code{
+    color:#35d9a1;
+    font-size:28px;
+    font-weight:bold;
+    letter-spacing:5px;
 }
 
 /* MODAL */
@@ -359,110 +333,114 @@ button{
 .modal{
     position:fixed;
     inset:0;
-    background:#0009;
-    display:flex;
+    background:rgba(0,0,0,.7);
+    display:none;
     align-items:center;
     justify-content:center;
-    z-index:100;
-}
-
-.modalBox{
-    width:92%;
-    max-width:450px;
-    max-height:90vh;
-    overflow:auto;
-    background:#17212b;
-    border-radius:18px;
+    z-index:50;
     padding:20px;
-    box-shadow:0 20px 60px #000;
 }
 
-.modalTitle{
-    font-size:22px;
-    font-weight:bold;
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:100%;
+    max-width:430px;
+    max-height:90vh;
+    overflow-y:auto;
+    background:#111b21;
+    border-radius:16px;
+    padding:22px;
+}
+
+.modal-box h2{
     margin-bottom:18px;
 }
 
-.modalActions{
+.modal-box input,
+.modal-box textarea{
+    width:100%;
+    background:#202c33;
+    color:white;
+    border:1px solid #34444d;
+    border-radius:9px;
+    padding:12px;
+    margin-bottom:10px;
+}
+
+.modal-box textarea{
+    resize:none;
+    height:90px;
+}
+
+.modal-actions{
     display:flex;
     gap:10px;
-    margin-top:15px;
-}
-
-.modalActions button{
-    flex:1;
-    padding:12px;
-    border-radius:10px;
-}
-
-.cancel{
-    background:#303c48;
-    color:white;
-}
-
-.primary{
-    background:#2aabee;
-    color:white;
-}
-
-.contactSelect{
-    max-height:250px;
-    overflow:auto;
-    background:#0e1621;
-    border-radius:12px;
     margin-top:10px;
 }
 
-.checkItem{
+.modal-actions button{
+    flex:1;
+    padding:12px;
+    border-radius:9px;
+}
+
+.cancel{
+    background:#27343b;
+    color:white;
+}
+
+.contact-choice{
+    background:#202c33;
+    padding:10px;
+    border-radius:8px;
+    margin:5px 0;
     display:flex;
     align-items:center;
     gap:10px;
-    padding:10px;
 }
 
-.checkItem input{
-    width:18px;
-    height:18px;
+.contact-choice input{
+    width:auto;
+    margin:0;
 }
 
-.profilePreview{
-    width:80px;
-    height:80px;
+.group-members{
+    max-height:200px;
+    overflow-y:auto;
+    margin:10px 0;
+}
+
+.profile-avatar{
+    width:90px;
+    height:90px;
+    margin:0 auto 15px;
     border-radius:50%;
-    background:#2aabee;
+    background:#33434c;
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
-    margin:0 auto 15px;
+    font-size:30px;
 }
 
-.profilePreview img{
+.profile-avatar img{
     width:100%;
     height:100%;
     object-fit:cover;
 }
 
-.fileInput{
-    width:100%;
-    padding:10px 0;
-    color:#aaa;
+.hidden{
+    display:none!important;
 }
 
-.toast{
-    position:fixed;
-    bottom:80px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#222d38;
-    color:white;
-    padding:12px 18px;
-    border-radius:12px;
-    z-index:500;
-    box-shadow:0 8px 30px #0008;
+.mobile-menu{
+    display:none;
 }
 
-@media(max-width:700px){
+@media(max-width:750px){
 
     .sidebar{
         width:100%;
@@ -472,23 +450,25 @@ button{
         display:none;
     }
 
-    #app.chatOpen .sidebar{
+    .sidebar.chat-open{
         display:none;
     }
 
-    #app.chatOpen .chat{
+    .chat.mobile-show{
         display:flex;
+        position:fixed;
+        inset:0;
+        z-index:20;
     }
 
-    .backBtn{
-        display:block!important;
+    .mobile-menu{
+        display:block;
     }
 }
 
-@media(min-width:701px){
-
-    .backBtn{
-        display:none!important;
+@media(min-width:751px){
+    #backBtn{
+        display:none;
     }
 }
 </style>
@@ -498,114 +478,82 @@ button{
 
 <!-- LOGIN -->
 
-<div id="loginPage">
+<div class="login-screen" id="loginScreen">
 
-    <div class="loginBox">
+    <div class="login-box">
 
-        <div class="logo">
-            BMAXGRAM
-        </div>
+        <h1>BMAXGRAM</h1>
 
-        <div class="subtitle">
-            Tezkor va qulay messenjer
-        </div>
+        <p>
+            Telefon raqamingiz bilan kiring
+        </p>
 
         <input
             id="phoneInput"
-            class="input"
-            placeholder="+998901234567"
             type="tel"
+            placeholder="+998901234567"
         >
 
         <button
+            class="primary"
             id="requestCodeBtn"
-            class="btn"
             onclick="requestCode()"
         >
             Kod olish
         </button>
 
         <div
-            id="codeArea"
-            class="hidden"
+            class="code-box"
+            id="codeBox"
         >
-
-            <div class="codeBox">
-
-                <div>
-                    Test kodi:
-                </div>
-
-                <div id="testCode">
-                    ------
-                </div>
-
-            </div>
-
-            <input
-                id="codeInput"
-                class="input"
-                style="margin-top:12px"
-                placeholder="6 xonali kod"
-                maxlength="6"
-                inputmode="numeric"
-            >
-
-            <button
-                class="btn"
-                onclick="login()"
-            >
-                BMAXGRAM'ga kirish
-            </button>
-
+            <div>Test tasdiqlash kodi:</div>
+            <div
+                class="code"
+                id="randomCode"
+            ></div>
         </div>
 
-    </div>
+        <input
+            id="codeInput"
+            class="hidden"
+            type="number"
+            placeholder="6 xonali kod"
+        >
 
+        <button
+            class="primary hidden"
+            id="loginBtn"
+            onclick="login()"
+        >
+            Kirish
+        </button>
+
+        <div
+            id="loginError"
+            style="
+              color:#ff7777;
+              text-align:center;
+              margin-top:12px;
+            "
+        ></div>
+
+    </div>
 </div>
 
 
 <!-- APP -->
 
 <div
+    class="app"
     id="app"
-    class="hidden"
 >
 
     <!-- SIDEBAR -->
 
     <aside class="sidebar">
 
-        <div class="sidebarHeader">
-
-            <div class="brand">
-                BMAXGRAM
-            </div>
-
-            <button
-                class="iconBtn"
-                title="Kontakt qo'shish"
-                onclick="openContactModal()"
-            >
-                👤+
-            </button>
-
-            <button
-                class="iconBtn"
-                title="Guruh yaratish"
-                onclick="openGroupModal()"
-            >
-                👥
-            </button>
-
-            <button
-                class="iconBtn"
-                title="Profil"
-                onclick="openProfileModal()"
-            >
-                ⚙
-            </button>
-
+        <div class="logo">
+            BMAXGRAM
         </div>
 
         <div class="search">
@@ -618,70 +566,121 @@ button{
 
         </div>
 
-        <div
-            id="list"
-            class="list"
-        ></div>
+        <div class="tabs">
+
+            <button
+                id="contactsTab"
+                class="active"
+                onclick="showTab('contacts')"
+            >
+                Kontaktlar
+            </button>
+
+            <button
+                id="groupsTab"
+                onclick="showTab('groups')"
+            >
+                Guruhlar
+            </button>
+
+            <button
+                onclick="openProfile()"
+            >
+                Profil
+            </button>
+
+        </div>
+
+        <div class="list" id="list"></div>
+
+        <div style="padding:10px">
+
+            <button
+                class="primary"
+                onclick="openAddContact()"
+            >
+                ＋ Kontakt qo'shish
+            </button>
+
+            <button
+                class="primary"
+                style="margin-top:8px"
+                onclick="openCreateGroup()"
+            >
+                ＋ Guruh yaratish
+            </button>
+
+        </div>
 
     </aside>
 
 
     <!-- CHAT -->
 
-    <main class="chat">
+    <main
+        class="chat"
+        id="chat"
+    >
 
-        <div class="chatHeader">
+        <div class="chat-header">
 
             <button
-                class="iconBtn backBtn"
+                class="header-btn mobile-menu"
+                id="backBtn"
                 onclick="closeChat()"
             >
                 ←
             </button>
 
             <div
-                id="chatAvatar"
                 class="avatar"
+                id="chatAvatar"
             >
-                💬
+                ?
             </div>
 
-            <div class="chatInfo">
+            <div class="header-info">
 
                 <div
+                    class="header-name"
                     id="chatName"
-                    class="chatName"
                 >
-                    Chat tanlang
+                    BMAXGRAM
                 </div>
 
                 <div
+                    class="header-status"
                     id="chatStatus"
-                    class="chatStatus"
                 >
-                    BMAXGRAM
+                    Chat tanlang
                 </div>
 
             </div>
 
             <button
-                id="groupInfoBtn"
-                class="iconBtn hidden"
-                onclick="openGroupInfo()"
+                class="header-btn"
+                id="groupAddBtn"
+                onclick="openAddMember()"
+                style="display:none"
             >
-                ℹ️
+                ＋
             </button>
 
         </div>
 
 
         <div
-            id="messages"
             class="messages"
+            id="messages"
         >
 
             <div class="empty">
-                Chap tomondan kontakt yoki guruhni tanlang
+                <div>
+                    <h2>BMAXGRAM</h2>
+                    <p>
+                        Kontakt yoki guruhni tanlang
+                    </p>
+                </div>
             </div>
 
         </div>
@@ -689,30 +688,35 @@ button{
 
         <div class="composer">
 
-            <textarea
-                id="messageInput"
-                class="textarea"
-                placeholder="Xabar yozing..."
-                rows="1"
-                onkeydown="handleEnter(event)"
-            ></textarea>
-
             <button
-                id="voiceBtn"
-                class="voiceBtn"
-                onclick="toggleVoice()"
+                class="header-btn"
+                onclick="document.getElementById('audioFile').click()"
                 title="Ovozli xabar"
             >
                 🎤
             </button>
 
+            <input
+                id="messageInput"
+                placeholder="Xabar yozing..."
+                onkeydown="messageKey(event)"
+            >
+
             <button
-                class="sendBtn"
-                onclick="sendMessage()"
-                title="Yuborish"
+                class="circle-btn"
+                onclick="sendText()"
             >
                 ➤
             </button>
+
+            <input
+                id="audioFile"
+                type="file"
+                accept="audio/*"
+                capture
+                class="hidden"
+                onchange="sendVoice(this)"
+            >
 
         </div>
 
@@ -721,33 +725,29 @@ button{
 </div>
 
 
-<!-- CONTACT MODAL -->
+<!-- ADD CONTACT -->
 
 <div
+    class="modal"
     id="contactModal"
-    class="modal hidden"
 >
 
-    <div class="modalBox">
+    <div class="modal-box">
 
-        <div class="modalTitle">
-            Kontakt qo'shish
-        </div>
+        <h2>Kontakt qo'shish</h2>
 
         <input
             id="contactPhone"
-            class="input"
-            placeholder="Telefon raqami"
             type="tel"
+            placeholder="Telefon raqami"
         >
 
         <input
             id="contactName"
-            class="input"
-            placeholder="Kontakt ismi"
+            placeholder="Ism"
         >
 
-        <div class="modalActions">
+        <div class="modal-actions">
 
             <button
                 class="cancel"
@@ -760,56 +760,52 @@ button{
                 class="primary"
                 onclick="addContact()"
             >
-                Qo'shish
+                Saqlash
             </button>
 
         </div>
+
+        <div
+            id="contactError"
+            style="color:#ff7777;margin-top:10px"
+        ></div>
 
     </div>
 
 </div>
 
 
-<!-- GROUP MODAL -->
+<!-- CREATE GROUP -->
 
 <div
+    class="modal"
     id="groupModal"
-    class="modal hidden"
 >
 
-    <div class="modalBox">
+    <div class="modal-box">
 
-        <div class="modalTitle">
-            Yangi guruh
-        </div>
+        <h2>Guruh yaratish</h2>
 
         <input
             id="groupName"
-            class="input"
             placeholder="Guruh nomi"
         >
 
-        <label>
-            Guruh rasmi
-        </label>
-
         <input
             id="groupAvatar"
-            class="fileInput"
-            type="file"
-            accept="image/*"
+            placeholder="Rasm URL (ixtiyoriy)"
         >
 
         <div>
-            Kontaktlardan odam qo'shish:
+            Guruhga qo'shiladigan kontaktlar:
         </div>
 
         <div
-            id="groupContacts"
-            class="contactSelect"
+            class="group-members"
+            id="groupContactList"
         ></div>
 
-        <div class="modalActions">
+        <div class="modal-actions">
 
             <button
                 class="cancel"
@@ -827,56 +823,59 @@ button{
 
         </div>
 
+        <div
+            id="groupError"
+            style="color:#ff7777;margin-top:10px"
+        ></div>
+
     </div>
 
 </div>
 
 
-<!-- GROUP INFO -->
+<!-- ADD MEMBER -->
 
 <div
-    id="groupInfoModal"
-    class="modal hidden"
+    class="modal"
+    id="memberModal"
 >
 
-    <div class="modalBox">
+    <div class="modal-box">
+
+        <h2>Guruhga odam qo'shish</h2>
 
         <div
-            id="groupInfoTitle"
-            class="modalTitle"
-        >
-            Guruh
-        </div>
-
-        <input
-            id="addMemberPhone"
-            class="input"
-            placeholder="Qo'shiladigan odam raqami"
-            type="tel"
-        >
-
-        <button
-            class="btn"
-            onclick="addGroupMember()"
-        >
-            Odam qo'shish
-        </button>
-
-        <div
-            id="groupMembers"
-            style="margin-top:20px"
+            id="memberContactList"
         ></div>
 
-        <div class="modalActions">
+        <input
+            id="memberPhone"
+            type="tel"
+            placeholder="Yoki telefon raqamini yozing"
+        >
+
+        <div class="modal-actions">
 
             <button
                 class="cancel"
-                onclick="closeModal('groupInfoModal')"
+                onclick="closeModal('memberModal')"
             >
-                Yopish
+                Bekor qilish
+            </button>
+
+            <button
+                class="primary"
+                onclick="addMember()"
+            >
+                Qo'shish
             </button>
 
         </div>
+
+        <div
+            id="memberError"
+            style="color:#ff7777;margin-top:10px"
+        ></div>
 
     </div>
 
@@ -886,49 +885,37 @@ button{
 <!-- PROFILE -->
 
 <div
+    class="modal"
     id="profileModal"
-    class="modal hidden"
 >
 
-    <div class="modalBox">
+    <div class="modal-box">
 
-        <div class="modalTitle">
-            Profil
-        </div>
+        <h2>Profil</h2>
 
         <div
-            id="profilePreview"
-            class="profilePreview"
-        >
-            👤
-        </div>
-
-        <input
+            class="profile-avatar"
             id="profileAvatar"
-            class="fileInput"
-            type="file"
-            accept="image/*"
         >
+            ?
+        </div>
 
         <input
             id="profileName"
-            class="input"
-            placeholder="Ismingiz"
+            placeholder="Ism"
         >
 
         <textarea
             id="profileBio"
-            class="input"
-            placeholder="Bio"
-            rows="3"
+            placeholder="O'zingiz haqingizda..."
         ></textarea>
 
-        <div
-            id="profilePhone"
-            style="color:#8c9aa7;margin-bottom:10px"
-        ></div>
+        <input
+            id="profileAvatarUrl"
+            placeholder="Rasm URL"
+        >
 
-        <div class="modalActions">
+        <div class="modal-actions">
 
             <button
                 class="cancel"
@@ -947,187 +934,1736 @@ button{
         </div>
 
         <button
-            class="btn"
-            style="background:#d33;margin-top:15px"
+            class="primary"
+            style="
+              margin-top:10px;
+              background:#d9534f;
+              color:white;
+            "
             onclick="logout()"
         >
             Chiqish
         </button>
+
+        <div
+            id="profileError"
+            style="color:#ff7777;margin-top:10px"
+        ></div>
 
     </div>
 
 </div>
 
 
-<div
-    id="toast"
-    class="toast hidden"
-></div>
-
-
 <script>
 
-const SERVER_URL = "";
+/* =========================================================
+   GLOBAL
+========================================================= */
 
 let currentUser = null;
+
 let currentChat = null;
-let currentMessages = [];
-let polling = null;
 
-let recorder = null;
-let recordedChunks = [];
-let recording = false;
+let contactsData = [];
 
+let groupsData = [];
 
-/* ======================================================
-   HELPERS
-====================================================== */
-
-function $(id){
-
-    return document.getElementById(id);
-
-}
+let currentTab = "contacts";
 
 
-function toast(message){
-
-    const el = $("toast");
-
-    el.textContent = message;
-
-    el.classList.remove("hidden");
-
-    clearTimeout(
-        toast.timer
-    );
-
-    toast.timer = setTimeout(
-        () => el.classList.add("hidden"),
-        3000
-    );
-
-}
-
+/* =========================================================
+   API
+========================================================= */
 
 async function api(
     url,
-    options={}
+    options = {}
 ){
 
-    const response = await fetch(
-        SERVER_URL + url,
-        {
-            credentials:"include",
-            ...options
-        }
-    );
+    const response =
+        await fetch(
+            url,
+            {
+                credentials:"same-origin",
+                ...options,
+                headers:{
+                    "Content-Type":
+                        "application/json",
+                    ...(options.headers || {})
+                }
+            }
+        );
 
-    let data = {};
+    let data;
 
     try{
-
-        data = await response.json();
-
-    }catch(e){}
+        data =
+            await response.json();
+    }
+    catch{
+        data = {
+            success:false,
+            message:
+                "Server javobi noto'g'ri"
+        };
+    }
 
     if(!response.ok){
 
         throw new Error(
             data.message ||
-            "Server xatosi"
+            "Xatolik"
+        );
+    }
+
+    return data;
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+async function init(){
+
+    try{
+
+        const data =
+            await api(
+                "/api/me"
+            );
+
+        currentUser =
+            data.user;
+
+        document
+            .getElementById(
+                "loginScreen"
+            )
+            .classList.add(
+                "hidden"
+            );
+
+        await loadContacts();
+
+        await loadGroups();
+
+    }
+    catch{
+
+        document
+            .getElementById(
+                "loginScreen"
+            )
+            .classList.remove(
+                "hidden"
+            );
+
+    }
+}
+
+
+/* =========================================================
+   RANDOM CODE
+========================================================= */
+
+async function requestCode(){
+
+    const phone =
+        document
+        .getElementById(
+            "phoneInput"
+        )
+        .value
+        .trim();
+
+    const error =
+        document
+        .getElementById(
+            "loginError"
+        );
+
+    error.textContent = "";
+
+    if(!phone){
+
+        error.textContent =
+            "Telefon raqam kiriting";
+
+        return;
+    }
+
+    try{
+
+        const data =
+            await api(
+                "/api/request_code",
+                {
+                    method:"POST",
+                    body:
+                        JSON.stringify({
+                            phone:phone
+                        })
+                }
+            );
+
+        document
+            .getElementById(
+                "codeBox"
+            )
+            .style.display =
+                "block";
+
+        document
+            .getElementById(
+                "randomCode"
+            )
+            .textContent =
+                data.code;
+
+        document
+            .getElementById(
+                "codeInput"
+            )
+            .classList.remove(
+                "hidden"
+            );
+
+        document
+            .getElementById(
+                "loginBtn"
+            )
+            .classList.remove(
+                "hidden"
+            );
+
+    }
+    catch(e){
+
+        error.textContent =
+            e.message;
+
+    }
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function login(){
+
+    const phone =
+        document
+        .getElementById(
+            "phoneInput"
+        )
+        .value
+        .trim();
+
+    const code =
+        document
+        .getElementById(
+            "codeInput"
+        )
+        .value
+        .trim();
+
+    const error =
+        document
+        .getElementById(
+            "loginError"
+        );
+
+    error.textContent = "";
+
+    try{
+
+        const data =
+            await api(
+                "/api/login",
+                {
+                    method:"POST",
+                    body:
+                        JSON.stringify({
+                            phone:phone,
+                            code:code
+                        })
+                }
+            );
+
+        currentUser =
+            data.user;
+
+        document
+            .getElementById(
+                "loginScreen"
+            )
+            .classList.add(
+                "hidden"
+            );
+
+        await loadContacts();
+
+        await loadGroups();
+
+    }
+    catch(e){
+
+        error.textContent =
+            e.message;
+
+    }
+}
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+function showTab(tab){
+
+    currentTab = tab;
+
+    document
+        .getElementById(
+            "contactsTab"
+        )
+        .classList.toggle(
+            "active",
+            tab === "contacts"
+        );
+
+    document
+        .getElementById(
+            "groupsTab"
+        )
+        .classList.toggle(
+            "active",
+            tab === "groups"
+        );
+
+    renderList();
+}
+
+
+/* =========================================================
+   CONTACTS
+========================================================= */
+
+async function loadContacts(){
+
+    try{
+
+        contactsData =
+            await api(
+                "/api/contacts"
+            );
+
+        if(
+            currentTab === "contacts"
+        ){
+            renderList();
+        }
+
+    }
+    catch(e){
+
+        console.error(e);
+
+    }
+}
+
+
+/* =========================================================
+   GROUPS
+========================================================= */
+
+async function loadGroups(){
+
+    try{
+
+        groupsData =
+            await api(
+                "/api/groups"
+            );
+
+        if(
+            currentTab === "groups"
+        ){
+            renderList();
+        }
+
+    }
+    catch(e){
+
+        console.error(e);
+
+    }
+}
+
+
+/* =========================================================
+   LIST
+========================================================= */
+
+function renderList(){
+
+    const list =
+        document
+        .getElementById(
+            "list"
+        );
+
+    const search =
+        document
+        .getElementById(
+            "searchInput"
+        )
+        .value
+        .toLowerCase();
+
+    list.innerHTML = "";
+
+    let data =
+        currentTab === "contacts"
+        ? contactsData
+        : groupsData;
+
+    data =
+        data.filter(
+            item => {
+
+                const name =
+                    (
+                        item.name ||
+                        ""
+                    ).toLowerCase();
+
+                return name.includes(
+                    search
+                );
+
+            }
+        );
+
+    if(!data.length){
+
+        list.innerHTML =
+            `
+            <div style="
+                text-align:center;
+                color:#819099;
+                padding:30px 10px;
+            ">
+                ${
+                    currentTab === "contacts"
+                    ? "Kontaktlar yo'q"
+                    : "Guruhlar yo'q"
+                }
+            </div>
+            `;
+
+        return;
+    }
+
+    data.forEach(
+        item => {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+            div.className =
+                "item";
+
+            div.onclick =
+                () => {
+
+                    if(
+                        currentTab ===
+                        "contacts"
+                    ){
+
+                        openPrivateChat(
+                            item
+                        );
+
+                    }
+                    else{
+
+                        openGroupChat(
+                            item
+                        );
+
+                    }
+
+                };
+
+            const avatar =
+                item.avatar
+                ?
+                `
+                <div class="avatar">
+                    <img src="${escapeHtml(item.avatar)}">
+                </div>
+                `
+                :
+                `
+                <div class="avatar">
+                    ${initial(
+                        item.name
+                    )}
+                </div>
+                `;
+
+            div.innerHTML =
+                `
+                ${avatar}
+
+                <div class="item-text">
+
+                    <div class="item-name">
+                        ${escapeHtml(
+                            item.name ||
+                            item.phone
+                        )}
+                    </div>
+
+                    <div class="item-sub">
+                        ${
+                            currentTab ===
+                            "groups"
+                            ?
+                            (
+                              (item.member_count || 0)
+                              + " ta a'zo"
+                            )
+                            :
+                            (
+                              item.phone || ""
+                            )
+                        }
+                    </div>
+
+                </div>
+                `;
+
+            list.appendChild(
+                div
+            );
+
+        }
+    );
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function filterItems(){
+
+    renderList();
+
+}
+
+
+/* =========================================================
+   PRIVATE CHAT
+========================================================= */
+
+function openPrivateChat(
+    contact
+){
+
+    currentChat = {
+
+        type:"private",
+
+        id:
+            contact.phone,
+
+        name:
+            contact.name ||
+            contact.phone,
+
+        avatar:
+            contact.avatar || ""
+
+    };
+
+    document
+        .getElementById(
+            "chatName"
+        )
+        .textContent =
+            currentChat.name;
+
+    document
+        .getElementById(
+            "chatStatus"
+        )
+        .textContent =
+            contact.phone;
+
+    setAvatar(
+        "chatAvatar",
+        currentChat.avatar,
+        currentChat.name
+    );
+
+    document
+        .getElementById(
+            "groupAddBtn"
+        )
+        .style.display =
+            "none";
+
+    showMobileChat();
+
+    loadMessages();
+
+}
+
+
+/* =========================================================
+   GROUP CHAT
+========================================================= */
+
+function openGroupChat(
+    group
+){
+
+    currentChat = {
+
+        type:"group",
+
+        id:
+            String(group.id),
+
+        name:
+            group.name,
+
+        avatar:
+            group.avatar || ""
+
+    };
+
+    document
+        .getElementById(
+            "chatName"
+        )
+        .textContent =
+            group.name;
+
+    document
+        .getElementById(
+            "chatStatus"
+        )
+        .textContent =
+            (
+                group.member_count ||
+                0
+            )
+            + " ta a'zo";
+
+    setAvatar(
+        "chatAvatar",
+        currentChat.avatar,
+        currentChat.name
+    );
+
+    document
+        .getElementById(
+            "groupAddBtn"
+        )
+        .style.display =
+            "block";
+
+    showMobileChat();
+
+    loadMessages();
+
+}
+
+
+/* =========================================================
+   LOAD MESSAGES
+========================================================= */
+
+async function loadMessages(){
+
+    if(!currentChat)
+        return;
+
+    try{
+
+        const data =
+            await api(
+                "/api/messages?chat_type="
+                +
+                encodeURIComponent(
+                    currentChat.type
+                )
+                +
+                "&chat_id="
+                +
+                encodeURIComponent(
+                    currentChat.id
+                )
+            );
+
+        renderMessages(
+            data
+        );
+
+    }
+    catch(e){
+
+        console.error(e);
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER MESSAGES
+========================================================= */
+
+function renderMessages(
+    data
+){
+
+    const box =
+        document
+        .getElementById(
+            "messages"
+        );
+
+    if(!data.length){
+
+        box.innerHTML =
+            `
+            <div class="empty">
+                Hozircha xabar yo'q
+            </div>
+            `;
+
+        return;
+    }
+
+    box.innerHTML = "";
+
+    data.forEach(
+        message => {
+
+            const mine =
+                message.sender_phone ===
+                currentUser.phone;
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+            div.className =
+                "message"
+                +
+                (
+                    mine
+                    ? " mine"
+                    : ""
+                );
+
+            let content = "";
+
+            if(
+                currentChat.type ===
+                "group"
+                &&
+                !mine
+            ){
+
+                content +=
+                    `
+                    <div class="message-name">
+                        ${escapeHtml(
+                            message.sender_name ||
+                            message.sender_phone
+                        )}
+                    </div>
+                    `;
+
+            }
+
+            if(message.text){
+
+                content +=
+                    `
+                    <div>
+                        ${escapeHtml(
+                            message.text
+                        )}
+                    </div>
+                    `;
+
+            }
+
+            if(message.audio){
+
+                content +=
+                    `
+                    <audio
+                        controls
+                        src="${escapeHtml(
+                            message.audio
+                        )}"
+                    ></audio>
+                    `;
+
+            }
+
+            content +=
+                `
+                <div class="message-time">
+                    ${formatTime(
+                        message.created_at
+                    )}
+                </div>
+                `;
+
+            div.innerHTML =
+                content;
+
+            box.appendChild(
+                div
+            );
+
+        }
+    );
+
+    box.scrollTop =
+        box.scrollHeight;
+}
+
+
+/* =========================================================
+   SEND TEXT
+========================================================= */
+
+async function sendText(){
+
+    if(!currentChat)
+        return;
+
+    const input =
+        document
+        .getElementById(
+            "messageInput"
+        );
+
+    const text =
+        input.value.trim();
+
+    if(!text)
+        return;
+
+    try{
+
+        await api(
+            "/api/messages",
+            {
+                method:"POST",
+                body:
+                    JSON.stringify({
+                        chat_type:
+                            currentChat.type,
+
+                        chat_id:
+                            currentChat.id,
+
+                        text:text
+                    })
+            }
+        );
+
+        input.value = "";
+
+        await loadMessages();
+
+    }
+    catch(e){
+
+        alert(
+            e.message
+        );
+
+    }
+}
+
+
+/* =========================================================
+   ENTER
+========================================================= */
+
+function messageKey(
+    event
+){
+
+    if(
+        event.key ===
+        "Enter"
+    ){
+
+        event.preventDefault();
+
+        sendText();
+
+    }
+}
+
+
+/* =========================================================
+   VOICE
+========================================================= */
+
+async function sendVoice(
+    input
+){
+
+    if(
+        !input.files ||
+        !input.files[0] ||
+        !currentChat
+    ){
+
+        return;
+    }
+
+    const form =
+        new FormData();
+
+    form.append(
+        "audio",
+        input.files[0]
+    );
+
+    form.append(
+        "chat_type",
+        currentChat.type
+    );
+
+    form.append(
+        "chat_id",
+        currentChat.id
+    );
+
+    try{
+
+        const response =
+            await fetch(
+                "/api/voice",
+                {
+                    method:"POST",
+                    body:form,
+                    credentials:
+                        "same-origin"
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if(!response.ok){
+
+            throw new Error(
+                data.message ||
+                "Ovoz yuborilmadi"
+            );
+
+        }
+
+        await loadMessages();
+
+    }
+    catch(e){
+
+        alert(
+            e.message
         );
 
     }
 
-    return data;
+    input.value = "";
 
 }
 
 
-function closeModal(id){
+/* =========================================================
+   ADD CONTACT MODAL
+========================================================= */
 
-    $(id).classList.add(
-        "hidden"
+function openAddContact(){
+
+    document
+        .getElementById(
+            "contactPhone"
+        )
+        .value = "";
+
+    document
+        .getElementById(
+            "contactName"
+        )
+        .value = "";
+
+    document
+        .getElementById(
+            "contactError"
+        )
+        .textContent = "";
+
+    openModal(
+        "contactModal"
     );
 
 }
 
 
-function openModal(id){
+/* =========================================================
+   ADD CONTACT
+========================================================= */
 
-    $(id).classList.remove(
-        "hidden"
-    );
+async function addContact(){
 
-}
+    const phone =
+        document
+        .getElementById(
+            "contactPhone"
+        )
+        .value
+        .trim();
 
+    const name =
+        document
+        .getElementById(
+            "contactName"
+        )
+        .value
+        .trim();
 
-function imageToDataURL(
-    file
-){
+    const error =
+        document
+        .getElementById(
+            "contactError"
+        );
 
-    return new Promise(
-        (resolve,reject)=>{
+    error.textContent = "";
 
-            if(!file){
+    try{
 
-                resolve("");
-
-                return;
-
+        await api(
+            "/api/contacts",
+            {
+                method:"POST",
+                body:
+                    JSON.stringify({
+                        phone:phone,
+                        name:name
+                    })
             }
+        );
 
-            const reader =
-                new FileReader();
+        closeModal(
+            "contactModal"
+        );
 
-            reader.onload =
-                () => resolve(
-                    reader.result
+        await loadContacts();
+
+        showTab(
+            "contacts"
+        );
+
+    }
+    catch(e){
+
+        error.textContent =
+            e.message;
+
+    }
+}
+
+
+/* =========================================================
+   CREATE GROUP
+========================================================= */
+
+function openCreateGroup(){
+
+    document
+        .getElementById(
+            "groupName"
+        )
+        .value = "";
+
+    document
+        .getElementById(
+            "groupAvatar"
+        )
+        .value = "";
+
+    document
+        .getElementById(
+            "groupError"
+        )
+        .textContent = "";
+
+    const list =
+        document
+        .getElementById(
+            "groupContactList"
+        );
+
+    list.innerHTML = "";
+
+    if(!contactsData.length){
+
+        list.innerHTML =
+            `
+            <div style="
+                color:#8c9aa1;
+                padding:10px 0;
+            ">
+                Avval kontakt qo'shing.
+            </div>
+            `;
+
+    }
+    else{
+
+        contactsData.forEach(
+            contact => {
+
+                const div =
+                    document.createElement(
+                        "label"
+                    );
+
+                div.className =
+                    "contact-choice";
+
+                div.innerHTML =
+                    `
+                    <input
+                        type="checkbox"
+                        value="${escapeHtml(
+                            contact.phone
+                        )}"
+                    >
+
+                    <span>
+                        ${escapeHtml(
+                            contact.name
+                        )}
+                        <small style="
+                            color:#89979e
+                        ">
+                            ${escapeHtml(
+                                contact.phone
+                            )}
+                        </small>
+                    </span>
+                    `;
+
+                list.appendChild(
+                    div
                 );
 
-            reader.onerror =
-                reject;
+            }
+        );
 
-            reader.readAsDataURL(
-                file
+    }
+
+    openModal(
+        "groupModal"
+    );
+}
+
+
+/* =========================================================
+   CREATE GROUP
+========================================================= */
+
+async function createGroup(){
+
+    const name =
+        document
+        .getElementById(
+            "groupName"
+        )
+        .value
+        .trim();
+
+    const avatar =
+        document
+        .getElementById(
+            "groupAvatar"
+        )
+        .value
+        .trim();
+
+    const checked =
+        document.querySelectorAll(
+            "#groupContactList input:checked"
+        );
+
+    const members =
+        Array.from(
+            checked
+        ).map(
+            x => x.value
+        );
+
+    const error =
+        document
+        .getElementById(
+            "groupError"
+        );
+
+    error.textContent = "";
+
+    try{
+
+        await api(
+            "/api/groups",
+            {
+                method:"POST",
+                body:
+                    JSON.stringify({
+                        name:name,
+                        avatar:avatar,
+                        members:members
+                    })
+            }
+        );
+
+        closeModal(
+            "groupModal"
+        );
+
+        await loadGroups();
+
+        showTab(
+            "groups"
+        );
+
+    }
+    catch(e){
+
+        error.textContent =
+            e.message;
+
+    }
+}
+
+
+/* =========================================================
+   ADD GROUP MEMBER
+========================================================= */
+
+async function openAddMember(){
+
+    if(
+        !currentChat ||
+        currentChat.type !==
+        "group"
+    ){
+        return;
+    }
+
+    const list =
+        document
+        .getElementById(
+            "memberContactList"
+        );
+
+    list.innerHTML = "";
+
+    if(!contactsData.length){
+
+        list.innerHTML =
+            `
+            <div style="
+                color:#8c9aa1;
+                margin-bottom:12px;
+            ">
+                Kontaktlaringiz yo'q.
+            </div>
+            `;
+
+    }
+    else{
+
+        contactsData.forEach(
+            contact => {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+                button.style.cssText =
+                    `
+                    width:100%;
+                    text-align:left;
+                    background:#202c33;
+                    color:white;
+                    padding:12px;
+                    margin-bottom:5px;
+                    border-radius:8px;
+                    `;
+
+                button.textContent =
+                    contact.name
+                    + " - "
+                    + contact.phone;
+
+                button.onclick =
+                    () => {
+
+                        document
+                            .getElementById(
+                                "memberPhone"
+                            )
+                            .value =
+                                contact.phone;
+
+                    };
+
+                list.appendChild(
+                    button
+                );
+
+            }
+        );
+
+    }
+
+    document
+        .getElementById(
+            "memberPhone"
+        )
+        .value = "";
+
+    document
+        .getElementById(
+            "memberError"
+        )
+        .textContent = "";
+
+    openModal(
+        "memberModal"
+    );
+
+}
+
+
+/* =========================================================
+   ADD MEMBER
+========================================================= */
+
+async function addMember(){
+
+    const phone =
+        document
+        .getElementById(
+            "memberPhone"
+        )
+        .value
+        .trim();
+
+    const error =
+        document
+        .getElementById(
+            "memberError"
+        );
+
+    error.textContent = "";
+
+    if(!currentChat){
+
+        error.textContent =
+            "Guruh tanlanmagan";
+
+        return;
+    }
+
+    try{
+
+        await api(
+            "/api/groups/"
+            +
+            currentChat.id
+            +
+            "/members",
+            {
+                method:"POST",
+                body:
+                    JSON.stringify({
+                        phone:phone
+                    })
+            }
+        );
+
+        closeModal(
+            "memberModal"
+        );
+
+        await loadGroups();
+
+        await loadMessages();
+
+        alert(
+            "Odam guruhga qo'shildi"
+        );
+
+    }
+    catch(e){
+
+        error.textContent =
+            e.message;
+
+    }
+
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+async function openProfile(){
+
+    try{
+
+        const data =
+            await api(
+                "/api/me"
             );
 
+        currentUser =
+            data.user;
+
+        document
+            .getElementById(
+                "profileName"
+            )
+            .value =
+                currentUser.name ||
+                "";
+
+        document
+            .getElementById(
+                "profileBio"
+            )
+            .value =
+                currentUser.bio ||
+                "";
+
+        document
+            .getElementById(
+                "profileAvatarUrl"
+            )
+            .value =
+                currentUser.avatar ||
+                "";
+
+        setAvatar(
+            "profileAvatar",
+            currentUser.avatar,
+            currentUser.name
+        );
+
+        openModal(
+            "profileModal"
+        );
+
+    }
+    catch(e){
+
+        alert(
+            e.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE PROFILE
+========================================================= */
+
+async function saveProfile(){
+
+    const name =
+        document
+        .getElementById(
+            "profileName"
+        )
+        .value
+        .trim();
+
+    const bio =
+        document
+        .getElementById(
+            "profileBio"
+        )
+        .value
+        .trim();
+
+    const avatar =
+        document
+        .getElementById(
+            "profileAvatarUrl"
+        )
+        .value
+        .trim();
+
+    try{
+
+        const data =
+            await api(
+                "/api/profile",
+                {
+                    method:"POST",
+                    body:
+                        JSON.stringify({
+                            name:name,
+                            bio:bio,
+                            avatar:avatar
+                        })
+                }
+            );
+
+        currentUser =
+            data.user;
+
+        closeModal(
+            "profileModal"
+        );
+
+        await loadContacts();
+
+    }
+    catch(e){
+
+        document
+            .getElementById(
+                "profileError"
+            )
+            .textContent =
+                e.message;
+
+    }
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout(){
+
+    try{
+
+        await api(
+            "/api/logout",
+            {
+                method:"POST"
+            }
+        );
+
+    }
+    catch(e){}
+
+    location.reload();
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openModal(
+    id
+){
+
+    document
+        .getElementById(
+            id
+        )
+        .classList.add(
+            "show"
+        );
+
+}
+
+
+function closeModal(
+    id
+){
+
+    document
+        .getElementById(
+            id
+        )
+        .classList.remove(
+            "show"
+        );
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+function showMobileChat(){
+
+    if(
+        window.innerWidth <=
+        750
+    ){
+
+        document
+            .getElementById(
+                "chat"
+            )
+            .classList.add(
+                "mobile-show"
+            );
+
+    }
+
+}
+
+
+function closeChat(){
+
+    document
+        .getElementById(
+            "chat"
+        )
+        .classList.remove(
+            "mobile-show"
+        );
+
+}
+
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+function setAvatar(
+    id,
+    image,
+    name
+){
+
+    const element =
+        document
+        .getElementById(
+            id
+        );
+
+    if(!element)
+        return;
+
+    if(image){
+
+        element.innerHTML =
+            `
+            <img
+                src="${escapeHtml(
+                    image
+                )}"
+            >
+            `;
+
+    }
+    else{
+
+        element.textContent =
+            initial(name);
+
+    }
+
+}
+
+
+function initial(
+    name
+){
+
+    if(!name)
+        return "?";
+
+    return name
+        .trim()
+        .charAt(0)
+        .toUpperCase();
+
+}
+
+
+/* =========================================================
+   TIME
+========================================================= */
+
+function formatTime(
+    value
+){
+
+    if(!value)
+        return "";
+
+    const date =
+        new Date(
+            value
+        );
+
+    if(
+        isNaN(
+            date.getTime()
+        )
+    ){
+        return "";
+    }
+
+    return date.toLocaleTimeString(
+        [],
+        {
+            hour:"2-digit",
+            minute:"2-digit"
         }
     );
 
 }
 
 
-function avatarHTML(
-    name,
-    avatar
-){
+/* =========================================================
+   SECURITY
+========================================================= */
 
-    if(avatar){
-
-        return `
-            <img
-                src="${escapeHTML(avatar)}"
-                alt=""
-            >
-        `;
-
-    }
-
-    const letter =
-        (name || "?")
-        .charAt(0)
-        .toUpperCase();
-
-    return escapeHTML(
-        letter
-    );
-
-}
-
-
-function escapeHTML(
+function escapeHtml(
     value
 ){
 
@@ -1158,1579 +2694,37 @@ function escapeHTML(
 }
 
 
-/* ======================================================
-   LOGIN
-====================================================== */
-
-async function requestCode(){
-
-    const phone =
-        $("phoneInput")
-        .value
-        .trim();
-
-    if(!phone){
-
-        toast(
-            "Telefon raqam kiriting"
-        );
-
-        return;
-
-    }
-
-    try{
-
-        const data =
-            await api(
-                "/api/request_code",
-                {
-                    method:"POST",
-                    headers:{
-                        "Content-Type":
-                            "application/json"
-                    },
-                    body:JSON.stringify({
-                        phone:phone
-                    })
-                }
-            );
-
-        $("codeArea")
-            .classList
-            .remove("hidden");
-
-        $("testCode")
-            .textContent =
-            data.code;
-
-        toast(
-            "Test kodi yaratildi"
-        );
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-async function login(){
-
-    const phone =
-        $("phoneInput")
-        .value
-        .trim();
-
-    const code =
-        $("codeInput")
-        .value
-        .trim();
-
-    if(!phone || !code){
-
-        toast(
-            "Telefon va kodni kiriting"
-        );
-
-        return;
-
-    }
-
-    try{
-
-        const data =
-            await api(
-                "/api/login",
-                {
-                    method:"POST",
-                    headers:{
-                        "Content-Type":
-                            "application/json"
-                    },
-                    body:JSON.stringify({
-                        phone:phone,
-                        code:code
-                    })
-                }
-            );
-
-        currentUser =
-            data.phone;
-
-        $("loginPage")
-            .classList
-            .add("hidden");
-
-        $("app")
-            .classList
-            .remove("hidden");
-
-        await loadAll();
-
-        toast(
-            "Xush kelibsiz!"
-        );
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-async function logout(){
-
-    try{
-
-        await api(
-            "/api/logout",
-            {
-                method:"POST"
-            }
-        );
-
-    }catch(e){}
-
-    location.reload();
-
-}
-
-
-/* ======================================================
-   LOAD
-====================================================== */
-
-async function loadAll(){
-
-    await loadContacts();
-    await loadGroups();
-    await loadProfile();
-
-}
-
-
-async function loadContacts(){
-
-    try{
-
-        const contacts =
-            await api(
-                "/api/contacts"
-            );
-
-        window.contacts =
-            contacts;
-
-        renderList();
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-async function loadGroups(){
-
-    try{
-
-        const groups =
-            await api(
-                "/api/groups"
-            );
-
-        window.groups =
-            groups;
-
-        renderList();
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-async function loadProfile(){
-
-    try{
-
-        const data =
-            await api(
-                "/api/profile"
-            );
-
-        currentUser =
-            data.user.phone;
-
-    }catch(error){}
-
-}
-
-
-/* ======================================================
-   LIST
-====================================================== */
-
-function renderList(){
-
-    const list =
-        $("list");
-
-    const contacts =
-        window.contacts || [];
-
-    const groups =
-        window.groups || [];
-
-    let html = "";
-
-    html += `
-        <div class="sectionTitle">
-            Guruhlar
-        </div>
-    `;
-
-    if(!groups.length){
-
-        html += `
-            <div
-                style="
-                    padding:12px 15px;
-                    color:#71808c
-                "
-            >
-                Guruh yo'q
-            </div>
-        `;
-
-    }
-
-    groups.forEach(
-        group => {
-
-            html += `
-                <div
-                    class="item"
-                    data-search="${escapeHTML(group.name)}"
-                    onclick="openGroup(${group.id})"
-                >
-
-                    <div class="avatar">
-                        ${avatarHTML(
-                            group.name,
-                            group.avatar
-                        )}
-                    </div>
-
-                    <div class="itemText">
-
-                        <div class="itemName">
-                            ${escapeHTML(group.name)}
-                        </div>
-
-                        <div class="itemPhone">
-                            ${group.member_count}
-                            ta a'zo
-                        </div>
-
-                    </div>
-
-                </div>
-            `;
-
+/* =========================================================
+   AUTO REFRESH
+========================================================= */
+
+setInterval(
+    async function(){
+
+        if(
+            !currentUser ||
+            !currentChat
+        ){
+            return;
         }
-    );
-
-
-    html += `
-        <div class="sectionTitle">
-            Kontaktlar
-        </div>
-    `;
-
-
-    if(!contacts.length){
-
-        html += `
-            <div
-                style="
-                    padding:12px 15px;
-                    color:#71808c
-                "
-            >
-                Kontakt yo'q
-            </div>
-        `;
-
-    }
-
-
-    contacts.forEach(
-        contact => {
-
-            html += `
-                <div
-                    class="item"
-                    data-search="${escapeHTML(
-                        contact.name + " " +
-                        contact.phone
-                    )}"
-                    onclick='openPrivate(${JSON.stringify(
-                        contact
-                    )})'
-                >
-
-                    <div class="avatar">
-                        ${avatarHTML(
-                            contact.name,
-                            contact.avatar
-                        )}
-                    </div>
-
-                    <div class="itemText">
-
-                        <div class="itemName">
-                            ${escapeHTML(
-                                contact.name
-                            )}
-                        </div>
-
-                        <div class="itemPhone">
-                            ${escapeHTML(
-                                contact.phone
-                            )}
-                        </div>
-
-                    </div>
-
-                </div>
-            `;
-
-        }
-    );
-
-
-    list.innerHTML =
-        html;
-
-}
-
-
-function filterItems(){
-
-    const query =
-        $("searchInput")
-        .value
-        .toLowerCase()
-        .trim();
-
-    document
-        .querySelectorAll(
-            ".item"
-        )
-        .forEach(
-            item => {
-
-                const text =
-                    (
-                        item.dataset.search ||
-                        ""
-                    )
-                    .toLowerCase();
-
-                item.style.display =
-                    !query ||
-                    text.includes(query)
-                        ? "flex"
-                        : "none";
-
-            }
-        );
-
-}
-
-
-/* ======================================================
-   PRIVATE CHAT
-====================================================== */
-
-function openPrivate(
-    contact
-){
-
-    currentChat = {
-        type:"private",
-        receiver:
-            contact.phone,
-        name:
-            contact.name,
-        avatar:
-            contact.avatar || ""
-    };
-
-    $("app")
-        .classList
-        .add("chatOpen");
-
-    $("chatName")
-        .textContent =
-        contact.name;
-
-    $("chatStatus")
-        .textContent =
-        contact.phone;
-
-    $("chatAvatar")
-        .innerHTML =
-        avatarHTML(
-            contact.name,
-            contact.avatar
-        );
-
-    $("groupInfoBtn")
-        .classList
-        .add("hidden");
-
-    loadMessages();
-
-    startPolling();
-
-}
-
-
-async function sendMessage(){
-
-    if(!currentChat){
-
-        toast(
-            "Avval chat tanlang"
-        );
-
-        return;
-
-    }
-
-    const input =
-        $("messageInput");
-
-    const text =
-        input.value.trim();
-
-    if(!text){
-
-        return;
-
-    }
-
-    try{
-
-        await api(
-            "/api/messages",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":
-                        "application/json"
-                },
-                body:JSON.stringify({
-                    receiver:
-                        currentChat.receiver,
-                    chat_type:
-                        currentChat.type,
-                    text:text
-                })
-            }
-        );
-
-        input.value = "";
-
-        await loadMessages();
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-function handleEnter(event){
-
-    if(
-        event.key === "Enter" &&
-        !event.shiftKey
-    ){
-
-        event.preventDefault();
-
-        sendMessage();
-
-    }
-
-}
-
-
-/* ======================================================
-   GROUP
-====================================================== */
-
-async function openGroup(
-    groupId
-){
-
-    try{
-
-        const data =
-            await api(
-                "/api/groups/" +
-                groupId
-            );
-
-        currentChat = {
-            type:"group",
-            receiver:
-                String(groupId),
-            name:
-                data.group.name,
-            avatar:
-                data.group.avatar || ""
-        };
-
-        $("app")
-            .classList
-            .add("chatOpen");
-
-        $("chatName")
-            .textContent =
-            data.group.name;
-
-        $("chatStatus")
-            .textContent =
-            data.members.length +
-            " ta a'zo";
-
-        $("chatAvatar")
-            .innerHTML =
-            avatarHTML(
-                data.group.name,
-                data.group.avatar
-            );
-
-        $("groupInfoBtn")
-            .classList
-            .remove("hidden");
-
-        await loadMessages();
-
-        startPolling();
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-async function openGroupModal(){
-
-    await loadContacts();
-
-    const contacts =
-        window.contacts || [];
-
-    const box =
-        $("groupContacts");
-
-    if(!contacts.length){
-
-        box.innerHTML = `
-            <div
-                style="
-                    padding:15px;
-                    color:#8998a5
-                "
-            >
-                Avval kontakt qo'shing.
-            </div>
-        `;
-
-    }else{
-
-        box.innerHTML =
-            contacts.map(
-                contact => `
-                    <label class="checkItem">
-
-                        <input
-                            type="checkbox"
-                            value="${escapeHTML(
-                                contact.phone
-                            )}"
-                        >
-
-                        <span>
-                            ${escapeHTML(
-                                contact.name
-                            )}
-                            <small
-                                style="
-                                    color:#8998a5
-                                "
-                            >
-                                ${escapeHTML(
-                                    contact.phone
-                                )}
-                            </small>
-                        </span>
-
-                    </label>
-                `
-            ).join("");
-
-    }
-
-    $("groupName").value = "";
-
-    $("groupAvatar").value = "";
-
-    openModal(
-        "groupModal"
-    );
-
-}
-
-
-async function createGroup(){
-
-    const name =
-        $("groupName")
-        .value
-        .trim();
-
-    if(!name){
-
-        toast(
-            "Guruh nomini kiriting"
-        );
-
-        return;
-
-    }
-
-    const selected =
-        [
-            ...document.querySelectorAll(
-                "#groupContacts input:checked"
-            )
-        ]
-        .map(
-            input => input.value
-        );
-
-    let avatar = "";
-
-    const file =
-        $("groupAvatar")
-        .files[0];
-
-    if(file){
 
         try{
 
-            avatar =
-                await imageToDataURL(
-                    file
-                );
-
-        }catch(e){}
-
-    }
-
-    try{
-
-        await api(
-            "/api/groups",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":
-                        "application/json"
-                },
-                body:JSON.stringify({
-                    name:name,
-                    avatar:avatar,
-                    members:selected
-                })
-            }
-        );
-
-        closeModal(
-            "groupModal"
-        );
-
-        await loadGroups();
-
-        toast(
-            "Guruh yaratildi"
-        );
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-async function openGroupInfo(){
-
-    if(
-        !currentChat ||
-        currentChat.type !== "group"
-    ){
-
-        return;
-
-    }
-
-    try{
-
-        const data =
-            await api(
-                "/api/groups/" +
-                currentChat.receiver
-            );
-
-        $("groupInfoTitle")
-            .textContent =
-            data.group.name;
-
-        $("groupMembers")
-            .innerHTML =
-            data.members
-            .map(
-                member => `
-                    <div
-                        style="
-                            display:flex;
-                            align-items:center;
-                            gap:10px;
-                            padding:10px;
-                            background:#0e1621;
-                            border-radius:10px;
-                            margin-bottom:6px
-                        "
-                    >
-
-                        <div class="avatar">
-                            ${avatarHTML(
-                                member.name,
-                                member.avatar
-                            )}
-                        </div>
-
-                        <div style="flex:1">
-                            <b>
-                                ${escapeHTML(
-                                    member.name
-                                )}
-                            </b>
-
-                            <div
-                                style="
-                                    color:#8998a5;
-                                    font-size:12px
-                                "
-                            >
-                                ${escapeHTML(
-                                    member.phone
-                                )}
-                            </div>
-                        </div>
-
-                        <span>
-                            ${
-                                member.role === "admin"
-                                ? "👑"
-                                : ""
-                            }
-                        </span>
-
-                    </div>
-                `
-            )
-            .join("");
-
-        $("addMemberPhone")
-            .value = "";
-
-        openModal(
-            "groupInfoModal"
-        );
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-async function addGroupMember(){
-
-    if(!currentChat){
-
-        return;
-
-    }
-
-    const phone =
-        $("addMemberPhone")
-        .value
-        .trim();
-
-    if(!phone){
-
-        toast(
-            "Telefon raqam kiriting"
-        );
-
-        return;
-
-    }
-
-    try{
-
-        await api(
-            "/api/groups/" +
-            currentChat.receiver +
-            "/members",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":
-                        "application/json"
-                },
-                body:JSON.stringify({
-                    phone:phone
-                })
-            }
-        );
-
-        toast(
-            "Odam guruhga qo'shildi"
-        );
-
-        $("addMemberPhone")
-            .value = "";
-
-        await openGroupInfo();
-
-        await openGroup(
-            Number(
-                currentChat.receiver
-            )
-        );
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-/* ======================================================
-   MESSAGES
-====================================================== */
-
-async function loadMessages(){
-
-    if(!currentChat){
-
-        return;
-
-    }
-
-    try{
-
-        const data =
-            await api(
-                "/api/messages?receiver=" +
-                encodeURIComponent(
-                    currentChat.receiver
-                ) +
-                "&chat_type=" +
-                encodeURIComponent(
-                    currentChat.type
-                )
-            );
-
-        currentMessages =
-            data;
-
-        renderMessages();
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-function renderMessages(){
-
-    const box =
-        $("messages");
-
-    if(!currentMessages.length){
-
-        box.innerHTML = `
-            <div class="empty">
-                Hali xabar yo'q.<br>
-                Birinchi xabarni yuboring.
-            </div>
-        `;
-
-        return;
-
-    }
-
-    box.innerHTML =
-        currentMessages
-        .map(
-            message => {
-
-                const mine =
-                    message.sender ===
-                    currentUser;
-
-                const time =
-                    message.created_at
-                    ? new Date(
-                        message.created_at
-                      ).toLocaleTimeString(
-                        [],
-                        {
-                            hour:"2-digit",
-                            minute:"2-digit"
-                        }
-                      )
-                    : "";
-
-                let content = "";
-
-                if(message.audio){
-
-                    content += `
-                        <audio
-                            controls
-                            src="${escapeHTML(
-                                message.audio
-                            )}"
-                        ></audio>
-                    `;
-
-                }
-
-                if(message.text){
-
-                    content += `
-                        <div>
-                            ${escapeHTML(
-                                message.text
-                            )}
-                        </div>
-                    `;
-
-                }
-
-                return `
-                    <div
-                        class="message ${
-                            mine
-                            ? "mine"
-                            : ""
-                        }"
-                    >
-
-                        ${
-                            !mine &&
-                            currentChat.type === "group"
-                            ? `
-                                <div class="sender">
-                                    ${escapeHTML(
-                                        message.sender_name
-                                    )}
-                                </div>
-                            `
-                            : ""
-                        }
-
-                        ${content}
-
-                        <div class="messageTime">
-                            ${time}
-                        </div>
-
-                    </div>
-                `;
-
-            }
-        )
-        .join("");
-
-    box.scrollTop =
-        box.scrollHeight;
-
-}
-
-
-function startPolling(){
-
-    clearInterval(
-        polling
-    );
-
-    polling =
-        setInterval(
-            () => {
-
-                if(currentChat){
-
-                    loadMessages();
-
-                }
-
-            },
-            2500
-        );
-
-}
-
-
-function closeChat(){
-
-    $("app")
-        .classList
-        .remove("chatOpen");
-
-    currentChat = null;
-
-    clearInterval(
-        polling
-    );
-
-}
-
-
-/* ======================================================
-   CONTACT MODAL
-====================================================== */
-
-function openContactModal(){
-
-    $("contactPhone")
-        .value = "";
-
-    $("contactName")
-        .value = "";
-
-    openModal(
-        "contactModal"
-    );
-
-}
-
-
-async function addContact(){
-
-    const phone =
-        $("contactPhone")
-        .value
-        .trim();
-
-    const name =
-        $("contactName")
-        .value
-        .trim();
-
-    if(!phone){
-
-        toast(
-            "Telefon raqam kiriting"
-        );
-
-        return;
-
-    }
-
-    try{
-
-        await api(
-            "/api/contacts",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":
-                        "application/json"
-                },
-                body:JSON.stringify({
-                    phone:phone,
-                    name:name
-                })
-            }
-        );
-
-        closeModal(
-            "contactModal"
-        );
-
-        await loadContacts();
-
-        toast(
-            "Kontakt qo'shildi"
-        );
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-/* ======================================================
-   PROFILE
-====================================================== */
-
-async function openProfileModal(){
-
-    try{
-
-        const data =
-            await api(
-                "/api/profile"
-            );
-
-        const user =
-            data.user;
-
-        $("profileName")
-            .value =
-            user.name || "";
-
-        $("profileBio")
-            .value =
-            user.bio || "";
-
-        $("profilePhone")
-            .textContent =
-            user.phone;
-
-        if(user.avatar){
-
-            $("profilePreview")
-                .innerHTML =
-                `<img src="${
-                    escapeHTML(
-                        user.avatar
-                    )
-                }">`;
-
-        }else{
-
-            $("profilePreview")
-                .textContent =
-                "👤";
+            await loadMessages();
 
         }
+        catch(e){}
 
-        $("profileAvatar")
-            .value = "";
-
-        openModal(
-            "profileModal"
-        );
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-async function saveProfile(){
-
-    const name =
-        $("profileName")
-        .value
-        .trim();
-
-    const bio =
-        $("profileBio")
-        .value
-        .trim();
-
-    let avatar = "";
-
-    const file =
-        $("profileAvatar")
-        .files[0];
-
-    if(file){
-
-        try{
-
-            avatar =
-                await imageToDataURL(
-                    file
-                );
-
-        }catch(e){}
-
-    }
-
-    try{
-
-        if(!avatar){
-
-            const data =
-                await api(
-                    "/api/profile"
-                );
-
-            avatar =
-                data.user.avatar ||
-                "";
-
-        }
-
-        await api(
-            "/api/profile",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":
-                        "application/json"
-                },
-                body:JSON.stringify({
-                    name:name,
-                    bio:bio,
-                    avatar:avatar
-                })
-            }
-        );
-
-        closeModal(
-            "profileModal"
-        );
-
-        toast(
-            "Profil saqlandi"
-        );
-
-        await loadContacts();
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-/* ======================================================
-   VOICE
-====================================================== */
-
-async function toggleVoice(){
-
-    if(recording){
-
-        stopVoice();
-
-    }else{
-
-        startVoice();
-
-    }
-
-}
-
-
-async function startVoice(){
-
-    if(!currentChat){
-
-        toast(
-            "Avval chat tanlang"
-        );
-
-        return;
-
-    }
-
-    if(
-        !navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia
-    ){
-
-        toast(
-            "Brauzer ovoz yozishni qo'llamaydi"
-        );
-
-        return;
-
-    }
-
-    try{
-
-        const stream =
-            await navigator
-            .mediaDevices
-            .getUserMedia({
-                audio:true
-            });
-
-        recordedChunks = [];
-
-        recorder =
-            new MediaRecorder(
-                stream
-            );
-
-        recorder.ondataavailable =
-            event => {
-
-                if(
-                    event.data &&
-                    event.data.size
-                ){
-
-                    recordedChunks
-                        .push(
-                            event.data
-                        );
-
-                }
-
-            };
-
-        recorder.onstop =
-            async () => {
-
-                stream
-                    .getTracks()
-                    .forEach(
-                        track =>
-                        track.stop()
-                    );
-
-                const blob =
-                    new Blob(
-                        recordedChunks,
-                        {
-                            type:
-                                "audio/webm"
-                        }
-                    );
-
-                await uploadVoice(
-                    blob
-                );
-
-            };
-
-        recorder.start();
-
-        recording = true;
-
-        $("voiceBtn")
-            .classList
-            .add("recording");
-
-        $("voiceBtn")
-            .textContent =
-            "⏹";
-
-        toast(
-            "Ovoz yozilmoqda..."
-        );
-
-    }catch(error){
-
-        toast(
-            "Mikrofonga ruxsat bering"
-        );
-
-    }
-
-}
-
-
-function stopVoice(){
-
-    if(
-        recorder &&
-        recorder.state !== "inactive"
-    ){
-
-        recorder.stop();
-
-    }
-
-    recording = false;
-
-    $("voiceBtn")
-        .classList
-        .remove("recording");
-
-    $("voiceBtn")
-        .textContent =
-        "🎤";
-
-}
-
-
-async function uploadVoice(
-    blob
-){
-
-    const form =
-        new FormData();
-
-    form.append(
-        "receiver",
-        currentChat.receiver
-    );
-
-    form.append(
-        "chat_type",
-        currentChat.type
-    );
-
-    form.append(
-        "audio",
-        blob,
-        "voice.webm"
-    );
-
-    try{
-
-        await api(
-            "/api/voice",
-            {
-                method:"POST",
-                body:form
-            }
-        );
-
-        await loadMessages();
-
-    }catch(error){
-
-        toast(
-            error.message
-        );
-
-    }
-
-}
-
-
-/* ======================================================
-   START
-====================================================== */
-
-window.addEventListener(
-    "load",
-    async () => {
-
-        try{
-
-            const data =
-                await api(
-                    "/api/profile"
-                );
-
-            if(
-                data &&
-                data.user &&
-                data.user.phone
-            ){
-
-                currentUser =
-                    data.user.phone;
-
-                $("loginPage")
-                    .classList
-                    .add("hidden");
-
-                $("app")
-                    .classList
-                    .remove("hidden");
-
-                await loadAll();
-
-            }
-
-        }catch(error){
-
-            // Login oynasi qoladi.
-
-        }
-
-    }
+    },
+    3000
 );
+
+
+/* =========================================================
+   START
+========================================================= */
+
+init();
 
 </script>
 
