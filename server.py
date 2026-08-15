@@ -1,208 +1,117 @@
-import os
-import sqlite3
-import random
-import re
-import base64
-from functools import wraps
 from flask import Flask, request, jsonify, session, send_from_directory
+from werkzeug.utils import secure_filename
+import os
+import random
+import uuid
+from datetime import datetime
 
 app = Flask(__name__)
 
 app.secret_key = os.environ.get(
     "SECRET_KEY",
-    "BMAXGRAM_CHANGE_THIS_SECRET"
+    "BMAXGRAM_TEST_SECRET_2026"
 )
 
-DB_FILE = os.environ.get(
-    "DB_FILE",
-    "bmaxgram.db"
-)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PUBLIC_DIR = os.path.join(BASE_DIR, "public")
+UPLOAD_DIR = os.path.join(PUBLIC_DIR, "uploads")
 
-PORT = int(
-    os.environ.get(
-        "PORT",
-        "5000"
-    )
-)
-
-BASE_DIR = os.path.dirname(
-    os.path.abspath(__file__)
-)
-
-PUBLIC_DIR = os.path.join(
-    BASE_DIR,
-    "public"
-)
-
-UPLOAD_DIR = os.path.join(
-    BASE_DIR,
-    "uploads"
-)
-
-os.makedirs(
-    PUBLIC_DIR,
-    exist_ok=True
-)
-
-os.makedirs(
-    UPLOAD_DIR,
-    exist_ok=True
-)
+os.makedirs(PUBLIC_DIR, exist_ok=True)
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-# =========================================================
-# DATABASE
-# =========================================================
+# ============================================================
+# TEST DATABASE
+# ============================================================
 
-def get_db():
+users = {}
+contacts = {}
+groups = {}
+messages = {}
 
-    db = sqlite3.connect(
-        DB_FILE,
-        timeout=30
-    )
-
-    db.row_factory = sqlite3.Row
-
-    return db
+verification_codes = {}
 
 
-def clean_phone(phone):
+# ============================================================
+# HELPERS
+# ============================================================
+
+def now():
+    return datetime.utcnow().isoformat()
+
+
+def current_phone():
+    return session.get("phone")
+
+
+def require_login():
+    phone = current_phone()
 
     if not phone:
-        return ""
-
-    phone = str(phone).strip()
-
-    phone = re.sub(
-        r"[^\d+]",
-        "",
-        phone
-    )
-
-    if phone.startswith("998"):
-
-        phone = "+" + phone
-
-    elif (
-        not phone.startswith("+")
-        and len(phone) == 9
-    ):
-
-        phone = "+998" + phone
-
-    elif not phone.startswith("+"):
-
-        phone = "+" + phone
+        return None
 
     return phone
 
 
-def init_db():
+def clean_phone(phone):
+    if not phone:
+        return ""
 
-    db = get_db()
-
-    cur = db.cursor()
-
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS users(
-            phone TEXT PRIMARY KEY,
-            name TEXT DEFAULT '',
-            bio TEXT DEFAULT '',
-            avatar TEXT DEFAULT ''
-        )
-    """)
-
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS contacts(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_phone TEXT NOT NULL,
-            contact_phone TEXT NOT NULL,
-            contact_name TEXT DEFAULT '',
-            UNIQUE(user_phone,contact_phone)
-        )
-    """)
-
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS groups(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL UNIQUE,
-            created_by TEXT NOT NULL,
-            avatar TEXT DEFAULT '',
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS group_members(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            group_id INTEGER NOT NULL,
-            user_phone TEXT NOT NULL,
-            role TEXT DEFAULT 'member',
-            UNIQUE(group_id,user_phone)
-        )
-    """)
-
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS messages(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            sender TEXT NOT NULL,
-            receiver TEXT NOT NULL,
-            chat_type TEXT NOT NULL,
-            text TEXT DEFAULT '',
-            audio TEXT DEFAULT '',
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS auth_codes(
-            phone TEXT PRIMARY KEY,
-            code TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-
-    db.commit()
-
-    db.close()
+    return str(phone).strip()
 
 
-init_db()
+def make_user(phone):
+    if phone not in users:
+        users[phone] = {
+            "phone": phone,
+            "name": phone,
+            "bio": "",
+            "avatar": "",
+            "created_at": now()
+        }
+
+    return users[phone]
 
 
-# =========================================================
-# AUTH
-# =========================================================
-
-def logged_user():
-
-    return session.get(
-        "phone"
+def contact_exists(owner, phone):
+    return any(
+        c["phone"] == phone
+        for c in contacts.get(owner, [])
     )
 
 
-def require_login(function):
+def save_upload(file):
 
-    @wraps(function)
-    def wrapper(*args, **kwargs):
+    if not file:
+        return ""
 
-        if not logged_user():
+    filename = secure_filename(
+        file.filename or "file"
+    )
 
-            return jsonify({
-                "message": "Kirish kerak"
-            }), 401
+    if not filename:
+        filename = "file"
 
-        return function(
-            *args,
-            **kwargs
-        )
+    extension = os.path.splitext(filename)[1]
 
-    return wrapper
+    filename = (
+        str(uuid.uuid4())
+        + extension
+    )
+
+    path = os.path.join(
+        UPLOAD_DIR,
+        filename
+    )
+
+    file.save(path)
+
+    return "/uploads/" + filename
 
 
-# =========================================================
-# FRONTEND
-# =========================================================
+# ============================================================
+# STATIC WEBSITE
+# ============================================================
 
 @app.route("/")
 def index():
@@ -222,11 +131,14 @@ def uploaded_file(filename):
     )
 
 
-# =========================================================
-# REQUEST CODE
-# =========================================================
+# ============================================================
+# RANDOM LOGIN CODE
+# ============================================================
 
-@app.post("/api/request_code")
+@app.route(
+    "/api/request_code",
+    methods=["POST"]
+)
 def request_code():
 
     data = request.get_json(
@@ -238,11 +150,12 @@ def request_code():
     )
 
     if not phone:
-
         return jsonify({
-            "message": "Telefon raqam kiriting"
+            "message":
+            "Telefon raqam kiriting"
         }), 400
 
+    # RANDOM 6 XONALI KOD
     code = str(
         random.randint(
             100000,
@@ -250,47 +163,24 @@ def request_code():
         )
     )
 
-    db = get_db()
+    verification_codes[phone] = code
 
-    db.execute("""
-        INSERT INTO auth_codes(
-            phone,
-            code
-        )
-        VALUES(?,?)
-        ON CONFLICT(phone)
-        DO UPDATE SET code=excluded.code
-    """, (
-        phone,
-        code
-    ))
-
-    db.execute("""
-        INSERT INTO users(
-            phone,
-            name
-        )
-        VALUES(?,?)
-        ON CONFLICT(phone)
-        DO NOTHING
-    """, (
-        phone,
-        phone
-    ))
-
-    db.commit()
-
-    db.close()
-
-    # Test rejimida kod frontendga qaytariladi.
+    # Test rejimida SMS yuborilmaydi.
+    # Kod saytga qaytariladi.
     return jsonify({
-        "status": "ok",
-        "phone": phone,
+        "success": True,
         "code": code
     })
 
 
-@app.post("/api/login")
+# ============================================================
+# LOGIN
+# ============================================================
+
+@app.route(
+    "/api/login",
+    methods=["POST"]
+)
 def login():
 
     data = request.get_json(
@@ -305,330 +195,345 @@ def login():
         data.get("code", "")
     ).strip()
 
-    if not phone or not code:
-
+    if not phone:
         return jsonify({
-            "message": "Telefon va kod kerak"
+            "message":
+            "Telefon raqam kiriting"
         }), 400
 
-    db = get_db()
-
-    row = db.execute("""
-        SELECT code
-        FROM auth_codes
-        WHERE phone=?
-    """, (
-        phone,
-    )).fetchone()
-
-    if not row:
-
-        db.close()
-
+    if not code:
         return jsonify({
-            "message": "Kod topilmadi"
+            "message":
+            "Kod kiriting"
         }), 400
 
-    if row["code"] != code:
-
-        db.close()
-
-        return jsonify({
-            "message": "Kod noto'g'ri"
-        }), 400
-
-    db.execute("""
-        INSERT INTO users(
-            phone,
-            name
-        )
-        VALUES(?,?)
-        ON CONFLICT(phone)
-        DO NOTHING
-    """, (
-        phone,
+    saved_code = verification_codes.get(
         phone
-    ))
+    )
 
-    db.commit()
+    if saved_code != code:
 
-    db.close()
+        return jsonify({
+            "message":
+            "Kod noto'g'ri"
+        }), 401
+
+    make_user(phone)
 
     session["phone"] = phone
 
+    # Bir marta ishlatiladigan kod
+    verification_codes.pop(
+        phone,
+        None
+    )
+
     return jsonify({
-        "status": "ok",
+        "success": True,
         "phone": phone
     })
 
 
-@app.post("/api/logout")
+# ============================================================
+# LOGOUT
+# ============================================================
+
+@app.route(
+    "/api/logout",
+    methods=["POST"]
+)
 def logout():
 
     session.clear()
 
     return jsonify({
-        "status": "ok"
+        "success": True
     })
 
 
-# =========================================================
+# ============================================================
 # PROFILE
-# =========================================================
+# ============================================================
 
-@app.get("/api/profile")
-@require_login
-def profile_get():
+@app.route(
+    "/api/profile",
+    methods=["GET", "POST"]
+)
+def profile():
 
-    phone = logged_user()
+    phone = require_login()
 
-    db = get_db()
-
-    user = db.execute("""
-        SELECT phone,name,bio,avatar
-        FROM users
-        WHERE phone=?
-    """, (
-        phone,
-    )).fetchone()
-
-    db.close()
-
-    return jsonify({
-        "user": dict(user)
-    })
-
-
-@app.post("/api/profile")
-@require_login
-def profile_save():
-
-    phone = logged_user()
-
-    data = request.get_json(
-        silent=True
-    ) or {}
-
-    name = str(
-        data.get("name", "")
-    ).strip()
-
-    bio = str(
-        data.get("bio", "")
-    ).strip()
-
-    avatar = str(
-        data.get("avatar", "")
-    )
-
-    if len(name) > 100:
-
-        name = name[:100]
-
-    if len(bio) > 500:
-
-        bio = bio[:500]
-
-    db = get_db()
-
-    db.execute("""
-        UPDATE users
-        SET name=?,
-            bio=?,
-            avatar=?
-        WHERE phone=?
-    """, (
-        name,
-        bio,
-        avatar,
-        phone
-    ))
-
-    db.commit()
-
-    db.close()
-
-    return jsonify({
-        "status": "ok"
-    })
-
-
-# =========================================================
-# CONTACTS
-# =========================================================
-
-@app.get("/api/contacts")
-@require_login
-def contacts_get():
-
-    phone = logged_user()
-
-    db = get_db()
-
-    rows = db.execute("""
-        SELECT
-            c.id,
-            c.contact_phone AS phone,
-            c.contact_name AS name,
-            u.avatar AS avatar,
-            u.bio AS bio
-        FROM contacts c
-        LEFT JOIN users u
-            ON u.phone=c.contact_phone
-        WHERE c.user_phone=?
-        ORDER BY c.id DESC
-    """, (
-        phone,
-    )).fetchall()
-
-    db.close()
-
-    return jsonify([
-        dict(row)
-        for row in rows
-    ])
-
-
-@app.post("/api/contacts")
-@require_login
-def contacts_add():
-
-    owner = logged_user()
-
-    data = request.get_json(
-        silent=True
-    ) or {}
-
-    contact_phone = clean_phone(
-        data.get("phone")
-    )
-
-    contact_name = str(
-        data.get("name", "")
-    ).strip()
-
-    if not contact_phone:
-
-        return jsonify({
-            "message": "Telefon raqam kerak"
-        }), 400
-
-    if not contact_name:
-
-        contact_name = contact_phone
-
-    db = get_db()
-
-    user = db.execute("""
-        SELECT phone
-        FROM users
-        WHERE phone=?
-    """, (
-        contact_phone,
-    )).fetchone()
-
-    if not user:
-
-        db.close()
+    if not phone:
 
         return jsonify({
             "message":
-            "Bu raqam bilan BMAXGRAM foydalanuvchisi topilmadi"
-        }), 404
+            "Avval tizimga kiring"
+        }), 401
 
-    try:
+    user = make_user(phone)
 
-        db.execute("""
-            INSERT INTO contacts(
-                user_phone,
-                contact_phone,
-                contact_name
-            )
-            VALUES(?,?,?)
-        """, (
-            owner,
-            contact_phone,
-            contact_name
-        ))
+    if request.method == "GET":
 
-        db.commit()
+        return jsonify({
+            "user": user
+        })
 
-    except sqlite3.IntegrityError:
-
-        db.execute("""
-            UPDATE contacts
-            SET contact_name=?
-            WHERE user_phone=?
-              AND contact_phone=?
-        """, (
-            contact_name,
-            owner,
-            contact_phone
-        ))
-
-        db.commit()
-
-    db.close()
-
-    return jsonify({
-        "status": "ok"
-    })
-
-
-# =========================================================
-# GROUPS
-# =========================================================
-
-@app.get("/api/groups")
-@require_login
-def groups_get():
-
-    phone = logged_user()
-
-    db = get_db()
-
-    rows = db.execute("""
-        SELECT
-            g.id,
-            g.name,
-            g.avatar,
-            COUNT(gm2.user_phone) AS member_count
-        FROM groups g
-        INNER JOIN group_members gm
-            ON gm.group_id=g.id
-        LEFT JOIN group_members gm2
-            ON gm2.group_id=g.id
-        WHERE gm.user_phone=?
-        GROUP BY g.id
-        ORDER BY g.id DESC
-    """, (
-        phone,
-    )).fetchall()
-
-    db.close()
-
-    return jsonify([
-        dict(row)
-        for row in rows
-    ])
-
-
-@app.post("/api/groups")
-@require_login
-def group_create():
-
-    creator = logged_user()
 
     data = request.get_json(
         silent=True
     ) or {}
 
     name = str(
-        data.get("name", "")
+        data.get(
+            "name",
+            user["name"]
+        )
     ).strip()
 
-    avatar = str(
-        data.get("avatar", "")
+    bio = str(
+        data.get(
+            "bio",
+            user["bio"]
+        )
+    ).strip()
+
+    avatar = data.get(
+        "avatar",
+        user["avatar"]
+    )
+
+    user["name"] = (
+        name
+        if name
+        else phone
+    )
+
+    user["bio"] = bio
+
+    if avatar:
+        user["avatar"] = avatar
+
+    return jsonify({
+        "success": True,
+        "user": user
+    })
+
+
+# ============================================================
+# CONTACTS - GET
+# ============================================================
+
+@app.route(
+    "/api/contacts",
+    methods=["GET"]
+)
+def get_contacts():
+
+    phone = require_login()
+
+    if not phone:
+
+        return jsonify({
+            "message":
+            "Avval tizimga kiring"
+        }), 401
+
+    result = []
+
+    for contact in contacts.get(
+        phone,
+        []
+    ):
+
+        target = users.get(
+            contact["phone"]
+        )
+
+        item = dict(contact)
+
+        if target:
+
+            item["avatar"] = target.get(
+                "avatar",
+                ""
+            )
+
+            if not item.get("name"):
+                item["name"] = target.get(
+                    "name",
+                    contact["phone"]
+                )
+
+        result.append(item)
+
+    return jsonify(result)
+
+
+# ============================================================
+# CONTACTS - ADD
+# ============================================================
+
+@app.route(
+    "/api/contacts",
+    methods=["POST"]
+)
+def add_contact():
+
+    owner = require_login()
+
+    if not owner:
+
+        return jsonify({
+            "message":
+            "Avval tizimga kiring"
+        }), 401
+
+    data = request.get_json(
+        silent=True
+    ) or {}
+
+    phone = clean_phone(
+        data.get("phone")
+    )
+
+    name = str(
+        data.get(
+            "name",
+            ""
+        )
+    ).strip()
+
+    if not phone:
+
+        return jsonify({
+            "message":
+            "Telefon raqam kiriting"
+        }), 400
+
+    if phone == owner:
+
+        return jsonify({
+            "message":
+            "O'zingizni kontaktga qo'sha olmaysiz"
+        }), 400
+
+    if phone not in users:
+
+        return jsonify({
+            "message":
+            "Bu raqam bilan foydalanuvchi topilmadi. Avval u BMAXGRAM'ga kirishi kerak."
+        }), 404
+
+    if contact_exists(
+        owner,
+        phone
+    ):
+
+        return jsonify({
+            "message":
+            "Bu kontakt allaqachon mavjud"
+        }), 400
+
+    if owner not in contacts:
+
+        contacts[owner] = []
+
+    target = users[phone]
+
+    contacts[owner].append({
+        "phone": phone,
+        "name":
+            name
+            or target.get(
+                "name",
+                phone
+            ),
+        "avatar":
+            target.get(
+                "avatar",
+                ""
+            )
+    })
+
+    return jsonify({
+        "success": True
+    })
+
+
+# ============================================================
+# GROUPS - GET
+# ============================================================
+
+@app.route(
+    "/api/groups",
+    methods=["GET"]
+)
+def get_groups():
+
+    phone = require_login()
+
+    if not phone:
+
+        return jsonify({
+            "message":
+            "Avval tizimga kiring"
+        }), 401
+
+    result = []
+
+    for group in groups.values():
+
+        if phone not in group["members"]:
+
+            continue
+
+        result.append({
+            "id": group["id"],
+            "name": group["name"],
+            "avatar": group.get(
+                "avatar",
+                ""
+            ),
+            "member_count":
+                len(group["members"])
+        })
+
+    return jsonify(result)
+
+
+# ============================================================
+# CREATE GROUP
+# ============================================================
+
+@app.route(
+    "/api/groups",
+    methods=["POST"]
+)
+def create_group():
+
+    owner = require_login()
+
+    if not owner:
+
+        return jsonify({
+            "message":
+            "Avval tizimga kiring"
+        }), 401
+
+    data = request.get_json(
+        silent=True
+    ) or {}
+
+    name = str(
+        data.get(
+            "name",
+            ""
+        )
+    ).strip()
+
+    avatar = data.get(
+        "avatar",
+        ""
     )
 
     members = data.get(
@@ -643,292 +548,264 @@ def group_create():
             "Guruh nomini kiriting"
         }), 400
 
-    db = get_db()
+    if not isinstance(
+        members,
+        list
+    ):
 
-    try:
+        members = []
 
-        cur = db.execute("""
-            INSERT INTO groups(
-                name,
-                created_by,
-                avatar
-            )
-            VALUES(?,?,?)
-        """, (
-            name,
-            creator,
-            avatar
-        ))
+    valid_members = []
 
-        group_id = cur.lastrowid
+    for phone in members:
 
-    except sqlite3.IntegrityError:
-
-        db.close()
-
-        return jsonify({
-            "message":
-            "Bu guruh nomi mavjud"
-        }), 400
-
-    db.execute("""
-        INSERT INTO group_members(
-            group_id,
-            user_phone,
-            role
-        )
-        VALUES(?,?,?)
-    """, (
-        group_id,
-        creator,
-        "admin"
-    ))
-
-    for member in members:
-
-        member = clean_phone(
-            member
+        phone = clean_phone(
+            phone
         )
 
-        if not member or member == creator:
-            continue
+        if (
+            phone
+            and phone in users
+            and phone != owner
+        ):
 
-        exists = db.execute("""
-            SELECT phone
-            FROM users
-            WHERE phone=?
-        """, (
-            member,
-        )).fetchone()
+            if phone not in valid_members:
 
-        if exists:
-
-            db.execute("""
-                INSERT OR IGNORE INTO group_members(
-                    group_id,
-                    user_phone,
-                    role
+                valid_members.append(
+                    phone
                 )
-                VALUES(?,?,?)
-            """, (
-                group_id,
-                member,
-                "member"
-            ))
 
-    db.commit()
+    if owner not in valid_members:
 
-    db.close()
+        valid_members.insert(
+            0,
+            owner
+        )
+
+    group_id = len(groups) + 1
+
+    while group_id in groups:
+        group_id += 1
+
+    groups[group_id] = {
+        "id": group_id,
+        "name": name,
+        "avatar": avatar,
+        "owner": owner,
+        "members": valid_members,
+        "created_at": now()
+    }
 
     return jsonify({
-        "status": "ok",
-        "id": group_id
+        "success": True,
+        "group": groups[group_id]
     })
 
 
-@app.get("/api/groups/<int:group_id>")
-@require_login
+# ============================================================
+# GROUP INFO
+# ============================================================
+
+@app.route(
+    "/api/groups/<int:group_id>",
+    methods=["GET"]
+)
 def group_info(group_id):
 
-    phone = logged_user()
+    phone = require_login()
 
-    db = get_db()
+    if not phone:
 
-    group = db.execute("""
-        SELECT *
-        FROM groups
-        WHERE id=?
-    """, (
-        group_id,
-    )).fetchone()
+        return jsonify({
+            "message":
+            "Avval tizimga kiring"
+        }), 401
+
+    group = groups.get(
+        group_id
+    )
 
     if not group:
 
-        db.close()
-
         return jsonify({
-            "message": "Guruh topilmadi"
+            "message":
+            "Guruh topilmadi"
         }), 404
 
-    member = db.execute("""
-        SELECT *
-        FROM group_members
-        WHERE group_id=?
-          AND user_phone=?
-    """, (
-        group_id,
-        phone
-    )).fetchone()
-
-    if not member:
-
-        db.close()
+    if phone not in group["members"]:
 
         return jsonify({
             "message":
             "Siz bu guruh a'zosi emassiz"
         }), 403
 
-    members = db.execute("""
-        SELECT
-            gm.user_phone AS phone,
-            gm.role,
-            COALESCE(
-                u.name,
-                gm.user_phone
-            ) AS name,
-            u.avatar
-        FROM group_members gm
-        LEFT JOIN users u
-            ON u.phone=gm.user_phone
-        WHERE gm.group_id=?
-        ORDER BY gm.role DESC
-    """, (
-        group_id,
-    )).fetchall()
+    member_list = []
 
-    db.close()
+    for member_phone in group["members"]:
+
+        user = make_user(
+            member_phone
+        )
+
+        role = (
+            "admin"
+            if member_phone ==
+            group["owner"]
+            else "member"
+        )
+
+        member_list.append({
+            "phone":
+                user["phone"],
+            "name":
+                user["name"],
+            "avatar":
+                user["avatar"],
+            "role":
+                role
+        })
 
     return jsonify({
-        "group": dict(group),
-        "members": [
-            dict(row)
-            for row in members
-        ]
+        "group": group,
+        "members": member_list
     })
 
 
-@app.post("/api/groups/<int:group_id>/members")
-@require_login
-def group_add_member(group_id):
+# ============================================================
+# ADD GROUP MEMBER
+# ============================================================
 
-    owner = logged_user()
+@app.route(
+    "/api/groups/<int:group_id>/members",
+    methods=["POST"]
+)
+def add_group_member(group_id):
+
+    phone = require_login()
+
+    if not phone:
+
+        return jsonify({
+            "message":
+            "Avval tizimga kiring"
+        }), 401
+
+    group = groups.get(
+        group_id
+    )
+
+    if not group:
+
+        return jsonify({
+            "message":
+            "Guruh topilmadi"
+        }), 404
+
+    if phone not in group["members"]:
+
+        return jsonify({
+            "message":
+            "Siz guruh a'zosi emassiz"
+        }), 403
+
+    # Hozircha guruhdagi barcha a'zolarga
+    # odam qo'shishga ruxsat beriladi.
 
     data = request.get_json(
         silent=True
     ) or {}
 
-    member_phone = clean_phone(
+    new_phone = clean_phone(
         data.get("phone")
     )
 
-    db = get_db()
-
-    group = db.execute("""
-        SELECT *
-        FROM groups
-        WHERE id=?
-    """, (
-        group_id,
-    )).fetchone()
-
-    if not group:
-
-        db.close()
+    if not new_phone:
 
         return jsonify({
-            "message": "Guruh topilmadi"
+            "message":
+            "Telefon raqam kiriting"
+        }), 400
+
+    if new_phone not in users:
+
+        return jsonify({
+            "message":
+            "Bu foydalanuvchi BMAXGRAM'da ro'yxatdan o'tmagan"
         }), 404
 
-    admin = db.execute("""
-        SELECT role
-        FROM group_members
-        WHERE group_id=?
-          AND user_phone=?
-    """, (
-        group_id,
-        owner
-    )).fetchone()
-
-    if not admin:
-
-        db.close()
+    if new_phone in group["members"]:
 
         return jsonify({
             "message":
-            "Guruh a'zosi emassiz"
-        }), 403
+            "Bu odam allaqachon guruhda"
+        }), 400
 
-    if admin["role"] != "admin":
-
-        db.close()
-
-        return jsonify({
-            "message":
-            "Faqat admin odam qo'sha oladi"
-        }), 403
-
-    user = db.execute("""
-        SELECT phone
-        FROM users
-        WHERE phone=?
-    """, (
-        member_phone,
-    )).fetchone()
-
-    if not user:
-
-        db.close()
-
-        return jsonify({
-            "message":
-            "Foydalanuvchi topilmadi"
-        }), 404
-
-    db.execute("""
-        INSERT OR IGNORE INTO group_members(
-            group_id,
-            user_phone,
-            role
-        )
-        VALUES(?,?,?)
-    """, (
-        group_id,
-        member_phone,
-        "member"
-    ))
-
-    db.commit()
-
-    db.close()
+    group["members"].append(
+        new_phone
+    )
 
     return jsonify({
-        "status": "ok"
+        "success": True,
+        "message":
+            "Odam guruhga qo'shildi"
     })
 
 
-# =========================================================
+# ============================================================
 # MESSAGES
-# =========================================================
+# ============================================================
 
-@app.get("/api/messages")
-@require_login
-def messages_get():
+def private_key(a, b):
 
-    me = logged_user()
-
-    receiver = str(
-        request.args.get(
-            "receiver",
-            ""
+    return (
+        "private:"
+        + ":".join(
+            sorted([
+                a,
+                b
+            ])
         )
     )
 
-    chat_type = str(
+
+def group_key(group_id):
+
+    return (
+        "group:"
+        + str(group_id)
+    )
+
+
+@app.route(
+    "/api/messages",
+    methods=["GET"]
+)
+def get_messages():
+
+    phone = require_login()
+
+    if not phone:
+
+        return jsonify({
+            "message":
+            "Avval tizimga kiring"
+        }), 401
+
+    receiver = clean_phone(
         request.args.get(
-            "chat_type",
-            "private"
+            "receiver"
         )
     )
 
-    after = int(
-        request.args.get(
-            "after",
-            "0"
-        )
+    chat_type = request.args.get(
+        "chat_type",
+        "private"
     )
 
-    db = get_db()
+    if not receiver:
+
+        return jsonify([])
+
 
     if chat_type == "group":
 
@@ -936,128 +813,87 @@ def messages_get():
             group_id = int(
                 receiver
             )
-        except ValueError:
-
-            db.close()
-
-            return jsonify([])
-
-        member = db.execute("""
-            SELECT id
-            FROM group_members
-            WHERE group_id=?
-              AND user_phone=?
-        """, (
-            group_id,
-            me
-        )).fetchone()
-
-        if not member:
-
-            db.close()
+        except:
 
             return jsonify({
                 "message":
-                "Guruhga a'zo emassiz"
+                "Noto'g'ri guruh"
+            }), 400
+
+        group = groups.get(
+            group_id
+        )
+
+        if not group:
+
+            return jsonify({
+                "message":
+                "Guruh topilmadi"
+            }), 404
+
+        if phone not in group["members"]:
+
+            return jsonify({
+                "message":
+                "Guruh a'zosi emassiz"
             }), 403
 
-        rows = db.execute("""
-            SELECT
-                m.id,
-                m.sender,
-                m.receiver,
-                m.chat_type,
-                m.text,
-                m.audio,
-                m.created_at,
-                COALESCE(
-                    u.name,
-                    m.sender
-                ) AS sender_name
-            FROM messages m
-            LEFT JOIN users u
-                ON u.phone=m.sender
-            WHERE m.chat_type='group'
-              AND m.receiver=?
-              AND m.id>?
-            ORDER BY m.id ASC
-            LIMIT 200
-        """, (
-            str(group_id),
-            after
-        )).fetchall()
+        key = group_key(
+            group_id
+        )
 
     else:
 
-        rows = db.execute("""
-            SELECT
-                m.id,
-                m.sender,
-                m.receiver,
-                m.chat_type,
-                m.text,
-                m.audio,
-                m.created_at,
-                COALESCE(
-                    u.name,
-                    m.sender
-                ) AS sender_name
-            FROM messages m
-            LEFT JOIN users u
-                ON u.phone=m.sender
-            WHERE m.chat_type='private'
-              AND m.id>?
-              AND (
-                    (
-                        m.sender=?
-                        AND m.receiver=?
-                    )
-                    OR
-                    (
-                        m.sender=?
-                        AND m.receiver=?
-                    )
-              )
-            ORDER BY m.id ASC
-            LIMIT 200
-        """, (
-            after,
-            me,
-            receiver,
-            receiver,
-            me
-        )).fetchall()
+        if receiver not in users:
 
-    db.close()
+            return jsonify([])
 
-    return jsonify([
-        dict(row)
-        for row in rows
-    ])
+        key = private_key(
+            phone,
+            receiver
+        )
 
 
-@app.post("/api/messages")
-@require_login
-def message_send():
+    return jsonify(
+        messages.get(
+            key,
+            []
+        )
+    )
 
-    sender = logged_user()
+
+# ============================================================
+# SEND TEXT MESSAGE
+# ============================================================
+
+@app.route(
+    "/api/messages",
+    methods=["POST"]
+)
+def send_message():
+
+    phone = require_login()
+
+    if not phone:
+
+        return jsonify({
+            "message":
+            "Avval tizimga kiring"
+        }), 401
 
     data = request.get_json(
         silent=True
     ) or {}
 
-    receiver = str(
+    receiver = clean_phone(
         data.get(
-            "receiver",
-            ""
+            "receiver"
         )
     )
 
-    chat_type = str(
-        data.get(
-            "chat_type",
-            "private"
-        )
+    chat_type = data.get(
+        "chat_type",
+        "private"
     )
 
     text = str(
@@ -1067,239 +903,308 @@ def message_send():
         )
     ).strip()
 
-    if not receiver or not text:
+    if not text:
 
         return jsonify({
             "message":
-            "Xabar bo'sh bo'lmasligi kerak"
+            "Xabar bo'sh"
         }), 400
 
-    if len(text) > 5000:
-
-        return jsonify({
-            "message":
-            "Xabar juda uzun"
-        }), 400
-
-    db = get_db()
 
     if chat_type == "group":
 
-        member = db.execute("""
-            SELECT id
-            FROM group_members
-            WHERE group_id=?
-              AND user_phone=?
-        """, (
-            receiver,
-            sender
-        )).fetchone()
+        try:
+            group_id = int(
+                receiver
+            )
+        except:
 
-        if not member:
+            return jsonify({
+                "message":
+                "Noto'g'ri guruh"
+            }), 400
 
-            db.close()
+        group = groups.get(
+            group_id
+        )
+
+        if not group:
+
+            return jsonify({
+                "message":
+                "Guruh topilmadi"
+            }), 404
+
+        if phone not in group["members"]:
 
             return jsonify({
                 "message":
                 "Guruh a'zosi emassiz"
             }), 403
 
-    else:
-
-        receiver = clean_phone(
-            receiver
+        key = group_key(
+            group_id
         )
 
-        exists = db.execute("""
-            SELECT phone
-            FROM users
-            WHERE phone=?
-        """, (
-            receiver,
-        )).fetchone()
+    else:
 
-        if not exists:
-
-            db.close()
+        if receiver not in users:
 
             return jsonify({
                 "message":
                 "Foydalanuvchi topilmadi"
             }), 404
 
-    cur = db.execute("""
-        INSERT INTO messages(
-            sender,
-            receiver,
-            chat_type,
-            text,
-            audio
+        key = private_key(
+            phone,
+            receiver
         )
-        VALUES(?,?,?,?,?)
-    """, (
-        sender,
-        receiver,
-        chat_type,
-        text,
-        ""
-    ))
 
-    message_id = cur.lastrowid
 
-    db.commit()
+    user = make_user(
+        phone
+    )
 
-    db.close()
+    message = {
+        "id": str(
+            uuid.uuid4()
+        ),
+        "sender": phone,
+        "sender_name":
+            user["name"],
+        "receiver":
+            receiver,
+        "chat_type":
+            chat_type,
+        "text":
+            text,
+        "audio":
+            "",
+        "created_at":
+            now()
+    }
+
+    if key not in messages:
+
+        messages[key] = []
+
+    messages[key].append(
+        message
+    )
 
     return jsonify({
-        "status": "ok",
-        "id": message_id
+        "success": True,
+        "message": message
     })
 
 
-# =========================================================
-# VOICE
-# =========================================================
+# ============================================================
+# VOICE MESSAGE
+# ============================================================
 
-@app.post("/api/voice")
-@require_login
-def voice_send():
+@app.route(
+    "/api/voice",
+    methods=["POST"]
+)
+def send_voice():
 
-    sender = logged_user()
+    phone = require_login()
 
-    receiver = str(
+    if not phone:
+
+        return jsonify({
+            "message":
+            "Avval tizimga kiring"
+        }), 401
+
+    receiver = clean_phone(
         request.form.get(
-            "receiver",
-            ""
+            "receiver"
         )
     )
 
-    chat_type = str(
-        request.form.get(
-            "chat_type",
-            "private"
-        )
+    chat_type = request.form.get(
+        "chat_type",
+        "private"
     )
 
     audio = request.files.get(
         "audio"
     )
 
-    if not receiver or not audio:
+    if not receiver:
 
         return jsonify({
             "message":
-            "Ovoz fayli kerak"
+            "Qabul qiluvchi ko'rsatilmagan"
         }), 400
 
-    extension = ".webm"
+    if not audio:
 
-    filename = (
-        str(random.randint(
-            100000,
-            999999999
-        ))
-        + extension
-    )
+        return jsonify({
+            "message":
+            "Ovoz fayli topilmadi"
+        }), 400
 
-    path = os.path.join(
-        UPLOAD_DIR,
-        filename
-    )
-
-    audio.save(
-        path
-    )
-
-    audio_url = (
-        "/uploads/" +
-        filename
-    )
-
-    db = get_db()
 
     if chat_type == "group":
 
-        member = db.execute("""
-            SELECT id
-            FROM group_members
-            WHERE group_id=?
-              AND user_phone=?
-        """, (
-            receiver,
-            sender
-        )).fetchone()
+        try:
+            group_id = int(
+                receiver
+            )
+        except:
 
-        if not member:
+            return jsonify({
+                "message":
+                "Noto'g'ri guruh"
+            }), 400
 
-            db.close()
+        group = groups.get(
+            group_id
+        )
 
-            try:
-                os.remove(path)
-            except Exception:
-                pass
+        if not group:
+
+            return jsonify({
+                "message":
+                "Guruh topilmadi"
+            }), 404
+
+        if phone not in group["members"]:
 
             return jsonify({
                 "message":
                 "Guruh a'zosi emassiz"
             }), 403
 
+        key = group_key(
+            group_id
+        )
+
     else:
 
-        receiver = clean_phone(
+        if receiver not in users:
+
+            return jsonify({
+                "message":
+                "Foydalanuvchi topilmadi"
+            }), 404
+
+        key = private_key(
+            phone,
             receiver
         )
 
-    cur = db.execute("""
-        INSERT INTO messages(
-            sender,
+
+    audio_url = save_upload(
+        audio
+    )
+
+    user = make_user(
+        phone
+    )
+
+    message = {
+        "id": str(
+            uuid.uuid4()
+        ),
+        "sender": phone,
+        "sender_name":
+            user["name"],
+        "receiver":
             receiver,
+        "chat_type":
             chat_type,
-            text,
-            audio
-        )
-        VALUES(?,?,?,?,?)
-    """, (
-        sender,
-        receiver,
-        chat_type,
-        "",
-        audio_url
-    ))
+        "text":
+            "",
+        "audio":
+            audio_url,
+        "created_at":
+            now()
+    }
 
-    message_id = cur.lastrowid
+    if key not in messages:
 
-    db.commit()
+        messages[key] = []
 
-    db.close()
+    messages[key].append(
+        message
+    )
 
     return jsonify({
-        "status": "ok",
-        "id": message_id,
-        "audio": audio_url
+        "success": True,
+        "message": message
     })
 
 
-# =========================================================
-# HEALTH
-# =========================================================
+# ============================================================
+# HEALTH CHECK
+# ============================================================
 
-@app.get("/api/health")
+@app.route(
+    "/api/health"
+)
 def health():
 
     return jsonify({
-        "status": "ok",
-        "app": "BMAXGRAM"
+        "status":
+            "ok",
+        "name":
+            "BMAXGRAM",
+        "users":
+            len(users),
+        "groups":
+            len(groups)
     })
 
 
-# =========================================================
+# ============================================================
+# ERROR HANDLERS
+# ============================================================
+
+@app.errorhandler(404)
+def not_found(error):
+
+    if request.path.startswith(
+        "/api/"
+    ):
+
+        return jsonify({
+            "message":
+            "API manzili topilmadi"
+        }), 404
+
+    return (
+        "BMAXGRAM sahifasi topilmadi",
+        404
+    )
+
+
+@app.errorhandler(500)
+def server_error(error):
+
+    return jsonify({
+        "message":
+        "Serverda ichki xatolik yuz berdi"
+    }), 500
+
+
+# ============================================================
 # RUN
-# =========================================================
+# ============================================================
 
 if __name__ == "__main__":
 
+    port = int(
+        os.environ.get(
+            "PORT",
+            5000
+        )
+    )
+
     app.run(
         host="0.0.0.0",
-        port=PORT,
+        port=port,
         debug=False
     )
